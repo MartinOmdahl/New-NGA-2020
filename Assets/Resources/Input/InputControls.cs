@@ -57,6 +57,38 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""TongueAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1cbcb28-91b4-47c5-acdb-47536146539e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Press to Target"",
+                    ""type"": ""Button"",
+                    ""id"": ""136c860b-9254-41e3-835a-680d5d13d64d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Hold to Target (Press)"",
+                    ""type"": ""Button"",
+                    ""id"": ""82a2e625-d12c-4197-bf9f-602bc6e376a3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Hold to Target (Release)"",
+                    ""type"": ""Button"",
+                    ""id"": ""6727b048-a2c6-4fe3-83d5-6c33c263bbf3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -114,6 +146,83 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""action"": ""Camera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""559aed2b-1ae5-4178-8922-c0a72976f168"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TongueAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6fc3065e-3412-4bad-916a-e1093927566d"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Press to Target"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""28882016-6872-4500-b6f8-2ea59279a459"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Press to Target"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ad13f534-2b7f-4560-94d2-202a053e6764"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Hold to Target (Press)"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3941d0fa-fae5-41d0-9fb7-16acc0f3ebc5"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Hold to Target (Press)"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e35e7431-16db-44fd-bf25-b5fe33c99fc3"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Hold to Target (Release)"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f0bd5e57-cc56-49c4-bea4-277e9b2a47f8"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Hold to Target (Release)"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -127,6 +236,10 @@ public class @InputControls : IInputActionCollection, IDisposable
         m_Player_PresstoRun = m_Player.FindAction("Press to Run", throwIfNotFound: true);
         m_Player_HoldtoRun = m_Player.FindAction("Hold to Run", throwIfNotFound: true);
         m_Player_Camera = m_Player.FindAction("Camera", throwIfNotFound: true);
+        m_Player_TongueAction = m_Player.FindAction("TongueAction", throwIfNotFound: true);
+        m_Player_PresstoTarget = m_Player.FindAction("Press to Target", throwIfNotFound: true);
+        m_Player_HoldtoTargetPress = m_Player.FindAction("Hold to Target (Press)", throwIfNotFound: true);
+        m_Player_HoldtoTargetRelease = m_Player.FindAction("Hold to Target (Release)", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -181,6 +294,10 @@ public class @InputControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_PresstoRun;
     private readonly InputAction m_Player_HoldtoRun;
     private readonly InputAction m_Player_Camera;
+    private readonly InputAction m_Player_TongueAction;
+    private readonly InputAction m_Player_PresstoTarget;
+    private readonly InputAction m_Player_HoldtoTargetPress;
+    private readonly InputAction m_Player_HoldtoTargetRelease;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
@@ -190,6 +307,10 @@ public class @InputControls : IInputActionCollection, IDisposable
         public InputAction @PresstoRun => m_Wrapper.m_Player_PresstoRun;
         public InputAction @HoldtoRun => m_Wrapper.m_Player_HoldtoRun;
         public InputAction @Camera => m_Wrapper.m_Player_Camera;
+        public InputAction @TongueAction => m_Wrapper.m_Player_TongueAction;
+        public InputAction @PresstoTarget => m_Wrapper.m_Player_PresstoTarget;
+        public InputAction @HoldtoTargetPress => m_Wrapper.m_Player_HoldtoTargetPress;
+        public InputAction @HoldtoTargetRelease => m_Wrapper.m_Player_HoldtoTargetRelease;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -214,6 +335,18 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Camera.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCamera;
                 @Camera.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCamera;
                 @Camera.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCamera;
+                @TongueAction.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTongueAction;
+                @TongueAction.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTongueAction;
+                @TongueAction.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTongueAction;
+                @PresstoTarget.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPresstoTarget;
+                @PresstoTarget.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPresstoTarget;
+                @PresstoTarget.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPresstoTarget;
+                @HoldtoTargetPress.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHoldtoTargetPress;
+                @HoldtoTargetPress.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHoldtoTargetPress;
+                @HoldtoTargetPress.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHoldtoTargetPress;
+                @HoldtoTargetRelease.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHoldtoTargetRelease;
+                @HoldtoTargetRelease.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHoldtoTargetRelease;
+                @HoldtoTargetRelease.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHoldtoTargetRelease;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -233,6 +366,18 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Camera.started += instance.OnCamera;
                 @Camera.performed += instance.OnCamera;
                 @Camera.canceled += instance.OnCamera;
+                @TongueAction.started += instance.OnTongueAction;
+                @TongueAction.performed += instance.OnTongueAction;
+                @TongueAction.canceled += instance.OnTongueAction;
+                @PresstoTarget.started += instance.OnPresstoTarget;
+                @PresstoTarget.performed += instance.OnPresstoTarget;
+                @PresstoTarget.canceled += instance.OnPresstoTarget;
+                @HoldtoTargetPress.started += instance.OnHoldtoTargetPress;
+                @HoldtoTargetPress.performed += instance.OnHoldtoTargetPress;
+                @HoldtoTargetPress.canceled += instance.OnHoldtoTargetPress;
+                @HoldtoTargetRelease.started += instance.OnHoldtoTargetRelease;
+                @HoldtoTargetRelease.performed += instance.OnHoldtoTargetRelease;
+                @HoldtoTargetRelease.canceled += instance.OnHoldtoTargetRelease;
             }
         }
     }
@@ -244,5 +389,9 @@ public class @InputControls : IInputActionCollection, IDisposable
         void OnPresstoRun(InputAction.CallbackContext context);
         void OnHoldtoRun(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
+        void OnTongueAction(InputAction.CallbackContext context);
+        void OnPresstoTarget(InputAction.CallbackContext context);
+        void OnHoldtoTargetPress(InputAction.CallbackContext context);
+        void OnHoldtoTargetRelease(InputAction.CallbackContext context);
     }
 }

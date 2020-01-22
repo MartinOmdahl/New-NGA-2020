@@ -9,7 +9,7 @@ public class SCR_Variables : ScriptableObject
 	public float gravity = -15f;
 
 
-	[Header("Player")]
+	[Header("Player movement")]
 	public bool holdToRun = true;
 	public float walkSpeed = 4;
 	public float runSpeed = 8;
@@ -20,6 +20,13 @@ public class SCR_Variables : ScriptableObject
 	public float jumpHeight = 1.5f;
 	[Range(0,1)]
 	public float airControlPercent = .5f;
+
+    [Header("Player tongue")]
+    public float maxTargetDistance = 5;
+    [Tooltip("Max angle target can be, relative to player." +
+        "\n An angle of 0 is directly in front of player.")]
+    public float maxTargetAngle = 90;
+    public bool holdToTarget = true;
 
 
 	[Header("Camera")]
