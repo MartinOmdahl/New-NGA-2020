@@ -18,10 +18,13 @@ public class SCR_PlayerV3 : MonoBehaviour
 	public SCR_Variables variables;
 	InputControls controls;
 	Rigidbody rb;
-	#endregion
+    #endregion
 
-	#region Local Variables
-	bool running;
+    #region Public variables
+    public bool usingNormalMovement = true;
+    #endregion
+    #region Local Variables
+    bool running;
 	float currentSpeed;
 	float rotationVelocity, speedVelocity;
 	float targetRotation;
@@ -41,8 +44,12 @@ public class SCR_PlayerV3 : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		//Functions
-		Move();
+        //Functions
+
+        if (usingNormalMovement)
+        {
+            Move();
+        }
 	}
 
 	void Move()
@@ -68,7 +75,11 @@ public class SCR_PlayerV3 : MonoBehaviour
 
 	void Jump()
 	{
-		rb.velocity = new Vector3(0, 6, 0);
+        if (usingNormalMovement)
+        {
+            rb.velocity = new Vector3(0, 6, 0);
+        }
+
 	}
 
 	void InputActions()

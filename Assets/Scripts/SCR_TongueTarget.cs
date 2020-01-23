@@ -15,4 +15,9 @@ public class SCR_TongueTarget : MonoBehaviour
     {
         
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawIcon(transform.position + targetIconOffset, "SPR_TargetTriangle128.png", false, Color.white);
+    }
 }

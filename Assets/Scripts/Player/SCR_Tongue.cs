@@ -86,6 +86,8 @@ public class SCR_Tongue : MonoBehaviour
 
     void UnlockTargeting()
     {
+        print("Unlock");
+
         lockedOnTarget = false;
         currentTarget = null;
     }
@@ -110,7 +112,6 @@ public class SCR_Tongue : MonoBehaviour
         // Set Hold targeting / Press targeting
         if (variables.holdToTarget)
         {
-
             controls.Player.HoldtoTargetPress.performed += ctx => InitiateLockOn();
             controls.Player.HoldtoTargetRelease.performed += ctx => UnlockTargeting();
         }
