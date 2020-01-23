@@ -46,14 +46,6 @@
                     "interactions": ""
                 },
                 {
-                    "name": "TongueAction",
-                    "type": "Button",
-                    "id": "a1cbcb28-91b4-47c5-acdb-47536146539e",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "Press to Target",
                     "type": "Button",
                     "id": "136c860b-9254-41e3-835a-680d5d13d64d",
@@ -74,6 +66,22 @@
                     "type": "Button",
                     "id": "6727b048-a2c6-4fe3-83d5-6c33c263bbf3",
                     "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Tongue Button Press",
+                    "type": "Button",
+                    "id": "1522ce41-6f87-41bb-9660-0ec8784096d9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Tongue Button Release",
+                    "type": "Button",
+                    "id": "ee97b943-e8d8-4bbc-95b7-5bbac7534f29",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -136,17 +144,6 @@
                 },
                 {
                     "name": "",
-                    "id": "559aed2b-1ae5-4178-8922-c0a72976f168",
-                    "path": "<Gamepad>/buttonWest",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TongueAction",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "6fc3065e-3412-4bad-916a-e1093927566d",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "Press",
@@ -186,6 +183,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Hold to Target (Release)",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "253f5b13-4afb-47b1-9aa3-e12887f55f5e",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Tongue Button Press",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bc8b6ce2-c35f-4a7b-8dff-40fe6e4365e0",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Tongue Button Release",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

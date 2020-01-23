@@ -21,7 +21,7 @@ MonoBehaviour:
   jumpHeight: 1.5
   airControlPercent: 0.5
   maxTargetDistance: 5
-  maxTargetAngle: 90
+  maxTargetAngle: 100
   holdToTarget: 1
   sensitivity: 1
   distanceFromTarget: 5
