@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Temporary script to visualize tongue stretching. Eventually, this wil be done through animation.
 public class SCR_TongueStretchProto : MonoBehaviour
 {
     public Transform tongueCollider;
     Transform tongueParent;
+
     void Start()
     {
         tongueParent = transform.parent;
         transform.SetParent(null);
     }
+
     void FixedUpdate()
     {
         transform.position = tongueParent.position;

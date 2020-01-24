@@ -43,6 +43,7 @@ public class SCR_Tongue : MonoBehaviour
 
     void Update()
     {
+        // Targeting behavior
         if (tongueState == TongueState.Retracted)
         {
             if (lockedOnTarget)
@@ -51,6 +52,7 @@ public class SCR_Tongue : MonoBehaviour
                 AutoTarget();
         }
 
+        // Check for tongue attack initiation
         if (controls.Player.TongueButtonPress.triggered
             && tongueState == TongueState.Retracted
             && currentTarget != null)
@@ -65,6 +67,7 @@ public class SCR_Tongue : MonoBehaviour
     {
         currentTarget = null;
 
+        // Go through each target in scene. If it is within range & angle of player, and no other target is closer, set it as current target.
         foreach(var target in SCR_ObjectReferenceManager.Instance.tongueTargets)
         {
             float targetDistance = Vector3.Distance(tongueParent.position, target.transform.position);
@@ -84,7 +87,6 @@ public class SCR_Tongue : MonoBehaviour
     {
         // If locked: unlock targeting.
         // If unlocked: Lock on target.
-
         if (lockedOnTarget)
         {
             UnlockTargeting();
@@ -97,6 +99,7 @@ public class SCR_Tongue : MonoBehaviour
 
     void InitiateLockOn()
     {
+        // Lock on autotargeted object, if any. Otherwise, do nothing.
         if(currentTarget != null)
         {
             lockedOnTarget = true;
@@ -106,7 +109,6 @@ public class SCR_Tongue : MonoBehaviour
     void UnlockTargeting()
     {
         lockedOnTarget = false;
-        currentTarget = null;
     }
 
     void LockedTarget()
@@ -115,7 +117,7 @@ public class SCR_Tongue : MonoBehaviour
 
         if (targetDistance <= variables.maxTargetDistance && currentTarget != null)
         {
-            // do targeting stuff
+            // Turn player towards target
         }
         else
         {
@@ -136,21 +138,41 @@ public class SCR_Tongue : MonoBehaviour
             tongueCollider.position = Vector3.Lerp(tongueParent.position, target.transform.position, TongueDistance);
         }
 
-        StartCoroutine(TongueHold(target));
+        // Change this later to check if Tongue Hold (ground) of Tongue Swing (air) should be used.
+        StartCoroutine(TongueSwing(target));
     }
 
-    IEnumerator TongueHold(SCR_TongueTarget target)
+    IEnumerator TongueSwing(SCR_TongueTarget target)
     {
-        ConfigurableJoint targetJoint = target.GetComponent<ConfigurableJoint>();
-        //targetJoint.connectedAnchor = tongueParent.position;
+        ConfigurableJoint targetJoint = target.GetComponentInChildren<ConfigurableJoint>();
+        Rigidbody targetJointRb = targetJoint.GetComponent<Rigidbody>();
+
+        // Turn player towards target
+        Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - tongueParent.position);
+        transform.rotation = targetRotation;
+        targetJoint.transform.rotation = targetRotation;
+       
+        // Connect player to target joint
         targetJoint.connectedBody = rb;
+
+        // Set target distance while swinging (promote to variable later)
+        targetJoint.targetPosition = new Vector3(0, 0, Vector3.Distance(tongueParent.position, targetJoint.transform.position) - 1.5f);
+
+        // Set initial swing velocity. Change this in future to convert linear velocity to angular
+        rb.velocity = rb.velocity.normalized * 7;
+        targetJointRb.AddRelativeTorque(-9999, 0, 0, ForceMode.Impulse);
+
+        // Deactivate normal movement
         movementScript.usingNormalMovement = false;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationX;
-       
-        while (holdingTongueButton && Vector3.Distance(tongueParent.position, target.transform.position) < variables.maxTargetDistance)
+        rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
+        rb.constraints &= ~RigidbodyConstraints.FreezeRotationZ;
+
+        while (holdingTongueButton)
         {
             yield return new WaitForEndOfFrame();
 
+            // Break tongue contact if player jumps
             if (controls.Player.Jump.triggered)
             {
                 break;
@@ -158,9 +180,14 @@ public class SCR_Tongue : MonoBehaviour
 
             tongueCollider.position = target.transform.position;
         }
+        // Break connection to joint
         targetJoint.connectedBody = null;
+
+        // Set velocity on swing end. Change this in future to convert linear velocity to angular
+        rb.velocity = rb.velocity.normalized * targetJointRb.angularVelocity.magnitude * 2;
+
+        // Re-activate normal movement
         movementScript.usingNormalMovement = true;
-       
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         StartCoroutine(TongueRetract(target));
@@ -183,6 +210,8 @@ public class SCR_Tongue : MonoBehaviour
     #region Input actions
     void InputActions()
     {
+        // Set input event functions
+
         // Set Hold targeting / Press targeting
         if (variables.holdToTarget)
         {
@@ -203,26 +232,28 @@ public class SCR_Tongue : MonoBehaviour
     Vector3 targetIconPosition;
     private void OnDrawGizmos()
     {
+        // Set color of targeting icon to indicate target locking
         Color targetingColor;
         if (lockedOnTarget)
             targetingColor = new Color(1, .6f, .6f);
         else
             targetingColor = new Color(1f, 0, 0);
 
-
         Gizmos.color = Color.red;
 
-        if(currentTarget != null)
+        if (currentTarget != null)
         {
+            // Show target icon and wire sphere on current target
             targetIconPosition = Vector3.Lerp(targetIconPosition, currentTarget.transform.position, 20 * Time.deltaTime);
             targetSphereSize = Mathf.MoveTowards(targetSphereSize, 0.5f, 4 * Time.deltaTime);
             Gizmos.DrawIcon(targetIconPosition + currentTarget.targetIconOffset, "SPR_TargetTriangle128.png", false, targetingColor);
         }
         else
         {
+            // If there is no target, shrink wire sphere to oblivion
             targetSphereSize = Mathf.MoveTowards(targetSphereSize, 0.0f, 4 * Time.deltaTime);
         }
-            Gizmos.DrawWireSphere(targetIconPosition, targetSphereSize);
+        Gizmos.DrawWireSphere(targetIconPosition, targetSphereSize);
     }
     #endregion
 }

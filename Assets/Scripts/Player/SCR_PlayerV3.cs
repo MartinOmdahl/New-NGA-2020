@@ -52,37 +52,33 @@ public class SCR_PlayerV3 : MonoBehaviour
         }
 	}
 
-	void Move()
-	{
-		//Get Player Input:
-		Vector2 input = controls.Player.Movement.ReadValue<Vector2>();
+    void Move()
+    {
+        //Get Player Input:
+        Vector2 input = controls.Player.Movement.ReadValue<Vector2>();
 
-		//If Input then set Target Rotation & Smoothly Rotate in Degrees:
-		if (input.magnitude > 0.1f)
-		{
-			targetRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
-		}
-		transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, variables.playerTurnSpeed);
-
-		//Check if Running & Set Speed Accordingly:
-		float targetSpeed = (running ? variables.runSpeed : variables.walkSpeed) * input.magnitude;
-		currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedVelocity, variables.Acceleration);
-
-		//Move the Player:
-		Vector3 velocity = transform.forward * currentSpeed;
-		rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
-	}
-
-	void Jump()
-	{
-        if (usingNormalMovement)
+        //If Input then set Target Rotation & Smoothly Rotate in Degrees:
+        if (input.magnitude > 0.1f)
         {
-            rb.velocity = new Vector3(0, 6, 0);
+            targetRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
         }
+        transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, variables.playerTurnSpeed);
 
-	}
+        //Check if Running & Set Speed Accordingly:
+        float targetSpeed = (running ? variables.runSpeed : variables.walkSpeed) * input.magnitude;
+        currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedVelocity, variables.Acceleration);
 
-	void InputActions()
+        //Move the Player:
+        Vector3 velocity = transform.forward * currentSpeed;
+        rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+    }
+
+    void Jump()
+    {
+        rb.velocity = new Vector3(rb.velocity.x, 6, rb.velocity.z);
+    }
+
+    void InputActions()
 	{
 		//Set Jump:
 		controls.Player.Jump.performed += ctx => Jump();
