@@ -150,6 +150,12 @@ public class SCR_Tongue : MonoBehaviour
         while (holdingTongueButton && Vector3.Distance(tongueParent.position, target.transform.position) < variables.maxTargetDistance)
         {
             yield return new WaitForEndOfFrame();
+
+            if (controls.Player.Jump.triggered)
+            {
+                break;
+            }
+
             tongueCollider.position = target.transform.position;
         }
         targetJoint.connectedBody = null;
