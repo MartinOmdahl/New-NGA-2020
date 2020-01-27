@@ -21,12 +21,22 @@ public class SCR_Variables : ScriptableObject
 	[Range(0,1)]
 	public float airControlPercent = .5f;
 
+    [Tooltip("Max walkable ground angle." +
+        "\n 0 is level ground, 90 is a wall")]
+    [Range(0, 90)]
+    public float maxGroundAngle = 45;
+
+
     [Header("Player tongue")]
     public float maxTargetDistance = 5;
     [Tooltip("Max angle target can be, relative to player." +
         "\n An angle of 0 is directly in front of player.")]
+    [Range(0, 360)]
     public float maxTargetAngle = 90;
     public bool holdToTarget = true;
+    [Tooltip("Length of tongue while swinging")]
+    [Min(0)]
+    public float swingDistance = 1;
 
 
 	[Header("Camera")]

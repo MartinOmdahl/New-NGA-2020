@@ -156,7 +156,7 @@ public class SCR_Tongue : MonoBehaviour
         targetJoint.connectedBody = rb;
 
         // Set target distance while swinging (promote to variable later)
-        targetJoint.targetPosition = new Vector3(0, 0, Vector3.Distance(tongueParent.position, targetJoint.transform.position) - 1.5f);
+        targetJoint.targetPosition = new Vector3(0, 0, Vector3.Distance(tongueParent.position, targetJoint.transform.position) - variables.swingDistance);
 
         // Set initial swing velocity. Change this in future to convert linear velocity to angular
         rb.velocity = rb.velocity.normalized * 7;
@@ -164,6 +164,7 @@ public class SCR_Tongue : MonoBehaviour
 
         // Deactivate normal movement
         movementScript.usingNormalMovement = false;
+        movementScript.canMidairJump = false;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationX;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationZ;
@@ -172,11 +173,11 @@ public class SCR_Tongue : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
 
-            // Break tongue contact if player jumps
-            if (controls.Player.Jump.triggered)
-            {
-                break;
-            }
+            //// Break tongue contact if player jumps (deprecated for now)
+            //if (controls.Player.Jump.triggered)
+            //{
+            //    break;
+            //}
 
             tongueCollider.position = target.transform.position;
         }
@@ -189,6 +190,9 @@ public class SCR_Tongue : MonoBehaviour
         // Re-activate normal movement
         movementScript.usingNormalMovement = true;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+        // Refresh midair jump after swinging
+        movementScript.canMidairJump = true;
 
         StartCoroutine(TongueRetract(target));
     }
