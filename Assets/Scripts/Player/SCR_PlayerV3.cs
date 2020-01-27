@@ -131,8 +131,6 @@ public class SCR_PlayerV3 : MonoBehaviour
 
     IEnumerator GroundJump()
     {
-        yield return null;
-
         // Change everything about this later, please
         rb.velocity = new Vector3(rb.velocity.x, 6, rb.velocity.z);
 
@@ -144,9 +142,10 @@ public class SCR_PlayerV3 : MonoBehaviour
 
     IEnumerator MidairJump()
     {
-        // oh god this hurts to look at
         yield return null;
         canMidairJump = false;
+        
+        // oh god this hurts to look at
         rb.velocity = new Vector3(rb.velocity.x, 4f, rb.velocity.z);
     }
     #endregion
