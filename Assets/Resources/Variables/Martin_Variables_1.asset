@@ -20,10 +20,12 @@ MonoBehaviour:
   Acceleration: 0.1
   jumpHeight: 1.5
   airControlPercent: 0.5
+  maxGroundAngle: 45
   maxTargetDistance: 5
   maxTargetAngle: 100
   holdToTarget: 1
-  sensitivity: 1
+  swingDistance: 1
+  sensitivity: 180
   distanceFromTarget: 5
   pitchMinMax: {x: -40, y: 85}
   camTurnSpeed: 0.1

@@ -159,8 +159,8 @@ public class SCR_Tongue : MonoBehaviour
         targetJoint.targetPosition = new Vector3(0, 0, Vector3.Distance(tongueParent.position, targetJoint.transform.position) - variables.swingDistance);
 
         // Set initial swing velocity. Change this in future to convert linear velocity to angular
-        rb.velocity = rb.velocity.normalized * 7;
-        targetJointRb.AddRelativeTorque(-9999, 0, 0, ForceMode.Impulse);
+        //rb.velocity = rb.velocity.normalized * 7;
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
         // Deactivate normal movement
         movementScript.usingNormalMovement = false;
@@ -169,9 +169,17 @@ public class SCR_Tongue : MonoBehaviour
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationZ;
 
+        float swingTime = 0;
         while (holdingTongueButton)
         {
             yield return new WaitForEndOfFrame();
+            swingTime += Time.deltaTime;
+
+            // Add some forward rotation at the beginning of swing
+            if (swingTime < 0.1f)
+            {
+                targetJointRb.AddRelativeTorque(-400 * Time.deltaTime, 0, 0, ForceMode.Impulse);
+            }
 
             //// Break tongue contact if player jumps (deprecated for now)
             //if (controls.Player.Jump.triggered)
