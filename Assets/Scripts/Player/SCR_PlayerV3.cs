@@ -14,10 +14,12 @@ public class SCR_PlayerV3 : MonoBehaviour
 		controls.Disable();
 	}
 	#endregion
+
 	#region References
 	public SCR_Variables variables;
 	InputControls controls;
 	Rigidbody rb;
+	Transform camT;
     #endregion
 
     #region Public variables
@@ -31,13 +33,26 @@ public class SCR_PlayerV3 : MonoBehaviour
 	float currentSpeed;
 	float rotationVelocity, speedVelocity;
 	float targetRotation;
-	Transform camT;
     int collisionCount;
-	#endregion
+    float jumpCooldown;
+    Vector3 groundNormal;
+    #endregion
 
-	private void Awake()
+    #region Debug variables
+    [ContextMenu("Show or hide ground normal")]
+    void GroundNormalSwitch()
+    {
+        showGroundNormal = !showGroundNormal;
+    }
+    [HideInInspector]
+    public bool showGroundNormal;
+
+    #endregion
+
+    private void Awake()
 	{
 		//REF:
+        // Whoa change this please
 		camT = GameObject.FindGameObjectWithTag("PlayerCam").transform;
 		controls = new InputControls();
 		rb = GetComponent<Rigidbody>();
@@ -122,32 +137,53 @@ public class SCR_PlayerV3 : MonoBehaviour
         if (touchingGround)
         {
             StartCoroutine(GroundJump());
+            StartCoroutine(AirJumpCooldown());
+            
         }
         else if (canMidairJump)
         {
-            StartCoroutine(MidairJump());
+            StartCoroutine(MidairJump(jumpCooldown));
+            canMidairJump = false;
         }
     }
 
     IEnumerator GroundJump()
     {
+        yield return null;
+
         // Change everything about this later, please
         rb.velocity = new Vector3(rb.velocity.x, 6, rb.velocity.z);
 
-        // Cooldown for airjumping after jumping (promote to variable later)
-        canMidairJump = false;
-        yield return new WaitForSeconds(0.5f);
-        canMidairJump = true;
+        Debug.DrawLine(transform.position, transform.position + Vector3.up, Color.red, 0.1f);
     }
 
-    IEnumerator MidairJump()
+    IEnumerator AirJumpCooldown()
+    {
+        jumpCooldown = variables.airJumpCooldown;
+        while (jumpCooldown > 0)
+        {
+            yield return new WaitForEndOfFrame();
+            jumpCooldown -= Time.deltaTime;
+        }
+        jumpCooldown = 0;
+    }
+
+    IEnumerator MidairJump(float buffer)
     {
         yield return null;
-        canMidairJump = false;
-        
-        // oh god this hurts to look at
-        rb.velocity = new Vector3(rb.velocity.x, 4f, rb.velocity.z);
+
+        // If button was pressed before cooldown ended, buffer the jump
+        yield return new WaitForSeconds(buffer);
+
+        if (usingNormalMovement && !touchingGround)
+        {
+            // oh god this hurts to look at
+            rb.velocity = new Vector3(rb.velocity.x, 4f, rb.velocity.z);
+
+            Debug.DrawLine(transform.position, transform.position + Vector3.up / 2, Color.blue, 0.1f);
+        }
     }
+
     #endregion
 
     #region Ground Detection
@@ -158,7 +194,6 @@ public class SCR_PlayerV3 : MonoBehaviour
         // This works because FixedUpdate is before OnCollisionStay in execution order.
         touchingGround = false;
     }
-
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -194,12 +229,15 @@ public class SCR_PlayerV3 : MonoBehaviour
             if (contactAngle < variables.maxGroundAngle)
             {
                 touchingGround = true;
+                groundNormal = contact.normal;
                 canMidairJump = true;
             }
         }
     }
 
     #endregion
+
+    #region Input actions
 
     void InputActions()
 	{
@@ -212,4 +250,17 @@ public class SCR_PlayerV3 : MonoBehaviour
 		else
 			controls.Player.PresstoRun.performed += ctx => running = !running;
 	}
+
+    #endregion
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.black;
+
+        if (touchingGround && showGroundNormal)
+        {
+            Gizmos.DrawLine(transform.position, transform.position + groundNormal);
+            Gizmos.DrawWireSphere(transform.position, 0.05f);
+        }
+    }
 }

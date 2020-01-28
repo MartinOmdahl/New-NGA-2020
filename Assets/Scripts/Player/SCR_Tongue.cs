@@ -20,7 +20,7 @@ public class SCR_Tongue : MonoBehaviour
     public Transform tongueParent;
     public Transform tongueCollider;
     InputControls controls;
-    SCR_PlayerV3 movementScript;
+    SCR_PlayerV3 movement;
     Rigidbody rb;
     #endregion
 
@@ -36,7 +36,7 @@ public class SCR_Tongue : MonoBehaviour
     {
         controls = new InputControls();
         rb = GetComponent<Rigidbody>();
-        movementScript = GetComponent<SCR_PlayerV3>();
+        movement = GetComponent<SCR_PlayerV3>();
 
         InputActions();
     }
@@ -85,6 +85,8 @@ public class SCR_Tongue : MonoBehaviour
 
     void PressTarget()
     {
+        // This is only used if "press" targeting is used
+
         // If locked: unlock targeting.
         // If unlocked: Lock on target.
         if (lockedOnTarget)
@@ -134,6 +136,9 @@ public class SCR_Tongue : MonoBehaviour
         while (TongueDistance < 1)
         {
             yield return new WaitForEndOfFrame();
+
+            // Linearly interpolate tongue's position from body to target
+            // (promote speed to variable later)
             TongueDistance += 10 * Time.deltaTime;
             tongueCollider.position = Vector3.Lerp(tongueParent.position, target.transform.position, TongueDistance);
         }
@@ -163,14 +168,14 @@ public class SCR_Tongue : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
         // Deactivate normal movement
-        movementScript.usingNormalMovement = false;
-        movementScript.canMidairJump = false;
+        movement.usingNormalMovement = false;
+        movement.canMidairJump = false;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationX;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationZ;
 
         float swingTime = 0;
-        while (holdingTongueButton)
+        while (holdingTongueButton || swingTime < 0.65f )
         {
             yield return new WaitForEndOfFrame();
             swingTime += Time.deltaTime;
@@ -196,11 +201,11 @@ public class SCR_Tongue : MonoBehaviour
         rb.velocity = rb.velocity.normalized * targetJointRb.angularVelocity.magnitude * 2;
 
         // Re-activate normal movement
-        movementScript.usingNormalMovement = true;
+        movement.usingNormalMovement = true;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         // Refresh midair jump after swinging
-        movementScript.canMidairJump = true;
+        movement.canMidairJump = true;
 
         StartCoroutine(TongueRetract(target));
     }
@@ -211,6 +216,9 @@ public class SCR_Tongue : MonoBehaviour
         while (TongueDistance > 0)
         {
             yield return new WaitForEndOfFrame();
+
+            // Linearly interpolate tongue's position from target back to body 
+            // (promote speed to variable later)
             TongueDistance -= 10 * Time.deltaTime;
             tongueCollider.position = Vector3.Lerp(tongueParent.position, target.transform.position, TongueDistance);
         }
@@ -231,11 +239,12 @@ public class SCR_Tongue : MonoBehaviour
             controls.Player.HoldtoTargetRelease.performed += ctx => UnlockTargeting();
         }
         else
+        {
             controls.Player.PresstoTarget.performed += ctx => PressTarget();
+        }
 
         controls.Player.TongueButtonPress.performed += ctx => holdingTongueButton = true;
         controls.Player.TongueButtonRelease.performed += ctx => holdingTongueButton = false;
-
     }
     #endregion
 
@@ -244,14 +253,15 @@ public class SCR_Tongue : MonoBehaviour
     Vector3 targetIconPosition;
     private void OnDrawGizmos()
     {
+        #region Highlight Target gizmos
+        Gizmos.color = Color.red;
+
         // Set color of targeting icon to indicate target locking
         Color targetingColor;
         if (lockedOnTarget)
             targetingColor = new Color(1, .6f, .6f);
         else
-            targetingColor = new Color(1f, 0, 0);
-
-        Gizmos.color = Color.red;
+            targetingColor = new Color(1, 0, 0);
 
         if (currentTarget != null)
         {
@@ -266,6 +276,27 @@ public class SCR_Tongue : MonoBehaviour
             targetSphereSize = Mathf.MoveTowards(targetSphereSize, 0.0f, 4 * Time.deltaTime);
         }
         Gizmos.DrawWireSphere(targetIconPosition, targetSphereSize);
+        #endregion
+
+        #region Show Target Range gizmos
+        Gizmos.color = Color.blue;
+
+        // you know what, fuck this whole part
+
+        //if (Application.isPlaying)
+        //{
+        //    DrawRelativeDirLine(new Vector3(0, variables.maxTargetAngle, 0), tongueParent);
+        //    DrawRelativeDirLine(new Vector3(0, -variables.maxTargetAngle, 0), tongueParent);
+        //    DrawRelativeDirLine(new Vector3(variables.maxTargetAngle, 0, 0), tongueParent);
+        //    DrawRelativeDirLine(new Vector3(-variables.maxTargetAngle, 0, 0), tongueParent);
+
+        //    void DrawRelativeDirLine(Vector3 angle, Transform lineParent)
+        //    {
+        //        Gizmos.DrawLine(lineParent.position, lineParent.position + ((Quaternion.Euler(angle) * lineParent.forward).normalized * variables.maxTargetDistance));
+        //    }
+        //}
+
+        #endregion
     }
     #endregion
 }

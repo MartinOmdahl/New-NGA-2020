@@ -523,6 +523,7 @@ MonoBehaviour:
   usingNormalMovement: 1
   touchingGround: 0
   canMidairJump: 1
+  showGroundNormal: 1
 --- !u!114 &876658418
 MonoBehaviour:
   m_ObjectHideFlags: 0

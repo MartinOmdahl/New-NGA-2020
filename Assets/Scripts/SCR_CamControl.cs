@@ -30,7 +30,12 @@ public class SCR_CamControl : MonoBehaviour
 		controls = new InputControls();
 	}
 
-	private void LateUpdate()
+    private void Start()
+    {
+        SCR_ObjectReferenceManager.Instance.playerCamera = GetComponent<Camera>();
+    }
+
+    private void LateUpdate()
 	{
 		Vector2 input = controls.Player.Camera.ReadValue<Vector2>();
 		yaw += input.x * variables.sensitivity * Time.deltaTime;
@@ -42,5 +47,4 @@ public class SCR_CamControl : MonoBehaviour
 
 		transform.position = lookTarget.position - transform.forward * variables.distanceFromTarget;
 	}
-
 }
