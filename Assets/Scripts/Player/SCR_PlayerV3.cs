@@ -24,6 +24,7 @@ public class SCR_PlayerV3 : MonoBehaviour
 
     #region Public variables
     public bool usingNormalMovement = true;
+    public bool canJump = true;
     public bool touchingGround;
     public bool canMidairJump = true;
     #endregion
@@ -134,13 +135,13 @@ public class SCR_PlayerV3 : MonoBehaviour
     void JumpCheck()
     {
         // Check what kind of jump should be performed, if any
-        if (touchingGround)
+        if (touchingGround && canJump)
         {
             StartCoroutine(GroundJump());
             StartCoroutine(AirJumpCooldown());
             
         }
-        else if (canMidairJump)
+        else if (canMidairJump && canJump)
         {
             StartCoroutine(MidairJump(jumpCooldown));
             canMidairJump = false;

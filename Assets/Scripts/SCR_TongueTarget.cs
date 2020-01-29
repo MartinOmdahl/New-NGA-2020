@@ -22,7 +22,9 @@ public class SCR_TongueTarget : MonoBehaviour
     // Eat variables
     [Tooltip("Whether player gets something after eating this object")]
     public bool HasReward;
-    [HideInInspector]
+    public enum RewardType { TempReward1, TempReward2, TempReward3}
+    public RewardType rewardType = RewardType.TempReward1;
+    public int rewardCount = 1;
     public bool isBeingEaten;
 
     public Vector3 targetIconOffset = new Vector3(0, 0.5f, 0);
@@ -58,6 +60,11 @@ public class DynamicVariables : Editor
 
             case SCR_TongueTarget.TargetType.Eat:
                 tongueTarget.HasReward = EditorGUILayout.Toggle("Has Reward", tongueTarget.HasReward);
+                if (tongueTarget.HasReward)
+                {
+                    tongueTarget.rewardType = (SCR_TongueTarget.RewardType)EditorGUILayout.EnumPopup("Reward Type", tongueTarget.rewardType);
+                    tongueTarget.rewardCount = EditorGUILayout.IntField("Count", tongueTarget.rewardCount);
+                }
                 break;
 
             case SCR_TongueTarget.TargetType.Grab:

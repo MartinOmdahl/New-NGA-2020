@@ -162,7 +162,7 @@ public class SCR_Tongue : MonoBehaviour
                 break;
 
             case SCR_TongueTarget.TargetType.Grab:
-                // Start Eat behavior
+                StartCoroutine(TongueGrab(target));
                 break;
 
             case SCR_TongueTarget.TargetType.Deflect:
@@ -201,6 +201,7 @@ public class SCR_Tongue : MonoBehaviour
 
         // Deactivate normal movement
         movement.usingNormalMovement = false;
+        movement.canJump = false;
         movement.canMidairJump = false;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationX;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
@@ -218,12 +219,6 @@ public class SCR_Tongue : MonoBehaviour
                 targetJointRb.AddRelativeTorque(-400 * Time.deltaTime, 0, 0, ForceMode.Impulse);
             }
 
-            //// Break tongue contact if player jumps (deprecated for now)
-            //if (controls.Player.Jump.triggered)
-            //{
-            //    break;
-            //}
-
             tongueCollider.position = target.transform.position;
         }
         // Break connection to joint
@@ -234,6 +229,7 @@ public class SCR_Tongue : MonoBehaviour
 
         // Re-activate normal movement
         movement.usingNormalMovement = true;
+        movement.canJump = true;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         // Refresh midair jump after swinging
@@ -250,11 +246,25 @@ public class SCR_Tongue : MonoBehaviour
         // Politely notify target that it's going to be eaten
         target.isBeingEaten = true;
 
+        // Slow down time for a split second (experimental)
+        Time.timeScale = 0.5f;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+        float time = 0;
+        while (time < 0.08f)
+        {
+            yield return new WaitForEndOfFrame();
+            time += Time.deltaTime / Time.timeScale;
+            tongueCollider.position = target.transform.position;
+        }
+        Time.timeScale = 1;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+
+
         // Attach target to tongue
         target.transform.SetParent(tongueCollider);
         target.transform.localScale = target.transform.localScale * 0.75f;
 
-        // Start retracting tongue, wait until it's retracted
+        // Retract tongue
         StartCoroutine(TongueRetract(target.transform.position, 1));
         yield return new WaitUntil(() => tongueState == TongueState.Retracted);
 
@@ -267,6 +277,41 @@ public class SCR_Tongue : MonoBehaviour
         SCR_ObjectReferenceManager.Instance.tongueTargets.Remove(target);
         Destroy(target.gameObject);
     }
+
+    IEnumerator TongueGrab(SCR_TongueTarget target)
+    {
+        ConfigurableJoint targetJoint = target.GetComponentInChildren<ConfigurableJoint>();
+
+        // Turn player towards target
+        Quaternion targetRotation = Quaternion.LookRotation(new Vector3(target.transform.position.x, tongueParent.position.y, target.transform.position.z) - tongueParent.position);
+        transform.rotation = targetRotation;
+        targetJoint.transform.rotation = targetRotation;
+
+        // Connect player to target joint
+        targetJoint.connectedBody = rb;
+
+        // Disable jumping
+        movement.canJump = false;
+
+        while (holdingTongueButton)
+        {
+            yield return new WaitForEndOfFrame();
+
+            // Turn player towards target. This part is disabled until movement system stops depending on player's rotation.
+            //targetRotation = Quaternion.LookRotation(new Vector3(target.transform.position.x, tongueParent.position.y, target.transform.position.z) - tongueParent.position);
+            //transform.rotation = targetRotation;
+
+            tongueCollider.position = target.transform.position;
+        }
+        // Break connection to joint
+        targetJoint.connectedBody = null;
+
+        // Enable jumping
+        movement.canJump = true;
+
+        StartCoroutine(TongueRetract(target.transform.position, 1));
+    }
+
     IEnumerator TongueRetract(Vector3 targetPos, float startingDistance)
     {
         float TongueDistance = startingDistance;
