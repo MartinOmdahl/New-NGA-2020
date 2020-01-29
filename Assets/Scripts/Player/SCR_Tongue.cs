@@ -143,12 +143,44 @@ public class SCR_Tongue : MonoBehaviour
             tongueCollider.position = Vector3.Lerp(tongueParent.position, target.transform.position, TongueDistance);
         }
 
-        // Change this later to check if Tongue Hold (ground) of Tongue Swing (air) should be used.
-        StartCoroutine(TongueSwing(target));
+        // Check what type of tongue interaction should be used
+        switch (target.targetType)
+        {
+            case SCR_TongueTarget.TargetType.Swing:
+                if (!movement.touchingGround || target.canSwingFromGround)
+                {
+                    StartCoroutine(TongueSwing(target));
+                }
+                else
+                {
+                    StartCoroutine(TongueRetract(target.transform.position, 1));
+                }
+                break;
+
+            case SCR_TongueTarget.TargetType.Eat:
+                StartCoroutine(TongueEat(target));
+                break;
+
+            case SCR_TongueTarget.TargetType.Grab:
+                // Start Eat behavior
+                break;
+
+            case SCR_TongueTarget.TargetType.Deflect:
+                // Maybe update this later to add effect
+                StartCoroutine(TongueRetract(target.transform.position, 1));
+                break;
+
+            default:
+                StartCoroutine(TongueRetract(target.transform.position, 1));
+                break;
+        }
     }
 
     IEnumerator TongueSwing(SCR_TongueTarget target)
     {
+        // Stop targeting
+        currentTarget = null;
+
         ConfigurableJoint targetJoint = target.GetComponentInChildren<ConfigurableJoint>();
         Rigidbody targetJointRb = targetJoint.GetComponent<Rigidbody>();
 
@@ -207,12 +239,37 @@ public class SCR_Tongue : MonoBehaviour
         // Refresh midair jump after swinging
         movement.canMidairJump = true;
 
-        StartCoroutine(TongueRetract(target));
+        StartCoroutine(TongueRetract(target.transform.position, 1));
     }
-
-    IEnumerator TongueRetract(SCR_TongueTarget target)
+    
+    IEnumerator TongueEat(SCR_TongueTarget target)
     {
-        float TongueDistance = 1;
+        // Stop targeting
+        currentTarget = null;
+
+        // Politely notify target that it's going to be eaten
+        target.isBeingEaten = true;
+
+        // Attach target to tongue
+        target.transform.SetParent(tongueCollider);
+        target.transform.localScale = target.transform.localScale * 0.75f;
+
+        // Start retracting tongue, wait until it's retracted
+        StartCoroutine(TongueRetract(target.transform.position, 1));
+        yield return new WaitUntil(() => tongueState == TongueState.Retracted);
+
+        if (target.HasReward)
+        {
+            // Give player reward
+        }
+
+        // Destroy target
+        SCR_ObjectReferenceManager.Instance.tongueTargets.Remove(target);
+        Destroy(target.gameObject);
+    }
+    IEnumerator TongueRetract(Vector3 targetPos, float startingDistance)
+    {
+        float TongueDistance = startingDistance;
         while (TongueDistance > 0)
         {
             yield return new WaitForEndOfFrame();
@@ -220,8 +277,9 @@ public class SCR_Tongue : MonoBehaviour
             // Linearly interpolate tongue's position from target back to body 
             // (promote speed to variable later)
             TongueDistance -= 10 * Time.deltaTime;
-            tongueCollider.position = Vector3.Lerp(tongueParent.position, target.transform.position, TongueDistance);
+            tongueCollider.position = Vector3.Lerp(tongueParent.position, targetPos, TongueDistance);
         }
+        tongueCollider.position = tongueParent.position;
 
         tongueState = TongueState.Retracted;
     }
