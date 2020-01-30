@@ -202,6 +202,7 @@ public class SCR_Tongue : MonoBehaviour
         // Deactivate normal movement
         movement.overrideNormalMovement = true;
         movement.overrideJump = true;
+        movement.overrideRotation = true;
         movement.canMidairJump = false;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationX;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
@@ -230,6 +231,7 @@ public class SCR_Tongue : MonoBehaviour
         // Re-activate normal movement
         movement.overrideNormalMovement = false;
         movement.overrideJump = false;
+        movement.overrideRotation = false;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         // Refresh midair jump after swinging
@@ -290,7 +292,8 @@ public class SCR_Tongue : MonoBehaviour
         // Connect player to target joint
         targetJoint.connectedBody = rb;
 
-        // Disable jumping
+        // Disable normal movement
+        //movement.overrideRotation = true;
         movement.overrideJump = true;
 
         while (holdingTongueButton)
@@ -306,7 +309,8 @@ public class SCR_Tongue : MonoBehaviour
         // Break connection to joint
         targetJoint.connectedBody = null;
 
-        // Enable jumping
+        // Enable normal movement
+        movement.overrideRotation = false;
         movement.overrideJump = false;
 
         StartCoroutine(TongueRetract(target.transform.position, 1));

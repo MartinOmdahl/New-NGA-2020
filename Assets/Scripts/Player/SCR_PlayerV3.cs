@@ -25,6 +25,7 @@ public class SCR_PlayerV3 : MonoBehaviour
     #region Public variables
     public bool overrideNormalMovement = false;
     public bool overrideJump = false;
+    public bool overrideRotation = false;
     public bool touchingGround;
     public bool canMidairJump = true;
     #endregion
@@ -78,6 +79,11 @@ public class SCR_PlayerV3 : MonoBehaviour
             }
         }
 
+        if (!overrideRotation)
+        {
+            NormalRotation();
+        }
+
         GroundDetect();
     }
 
@@ -89,11 +95,11 @@ public class SCR_PlayerV3 : MonoBehaviour
         Vector2 input = controls.Player.Movement.ReadValue<Vector2>();
 
         //If Input then set Target Rotation & Smoothly Rotate in Degrees:
-        if (input.magnitude > 0.1f)
-        {
-            targetRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
-        }
-        transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, variables.playerTurnSpeed);
+        //if (input.magnitude > 0.1f)
+        //{
+        //    targetRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
+        //}
+        //transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, variables.playerTurnSpeed);
 
         //Check if Running & Set Speed Accordingly:
         float targetSpeed = (running ? variables.runSpeed : variables.walkSpeed) * input.magnitude;
@@ -110,11 +116,11 @@ public class SCR_PlayerV3 : MonoBehaviour
         Vector2 input = controls.Player.Movement.ReadValue<Vector2>();
 
         //If Input then set Target Rotation & Smoothly Rotate in Degrees:
-        if (input.magnitude > 0.1f)
-        {
-            targetRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
-        }
-        transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, variables.playerTurnSpeed);
+        //if (input.magnitude > 0.1f)
+        //{
+        //    targetRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
+        //}
+        //transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, variables.playerTurnSpeed);
 
         //Check if Running & Set Speed Accordingly:
         float targetSpeed = (running ? variables.runSpeed : variables.walkSpeed) * input.magnitude;
@@ -234,6 +240,23 @@ public class SCR_PlayerV3 : MonoBehaviour
                 canMidairJump = true;
             }
         }
+    }
+
+    #endregion
+
+    #region Animation
+
+    void NormalRotation()
+    {
+        //Get Player Input:
+        Vector2 input = controls.Player.Movement.ReadValue<Vector2>();
+
+        //If Input then set Target Rotation & Smoothly Rotate in Degrees:
+        if (input.magnitude > 0.1f)
+        {
+            targetRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
+        }
+        transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, variables.playerTurnSpeed);
     }
 
     #endregion

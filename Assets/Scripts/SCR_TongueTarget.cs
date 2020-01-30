@@ -27,6 +27,11 @@ public class SCR_TongueTarget : MonoBehaviour
     public int rewardCount = 1;
     public bool isBeingEaten;
 
+    // Grab variables
+    [Tooltip("Whether pulling on this object triggers an event.")]
+    public bool eventOnPull;
+    public bool isBeingPulled;
+
     public Vector3 targetIconOffset = new Vector3(0, 0.5f, 0);
     void Start()
     {
@@ -68,6 +73,7 @@ public class DynamicVariables : Editor
                 break;
 
             case SCR_TongueTarget.TargetType.Grab:
+                tongueTarget.eventOnPull = EditorGUILayout.Toggle("Event On Pull", tongueTarget.eventOnPull);
 
                 break;
 
