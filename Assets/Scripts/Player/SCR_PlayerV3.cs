@@ -23,8 +23,8 @@ public class SCR_PlayerV3 : MonoBehaviour
     #endregion
 
     #region Public variables
-    public bool usingNormalMovement = true;
-    public bool canJump = true;
+    public bool overrideNormalMovement = false;
+    public bool overrideJump = false;
     public bool touchingGround;
     public bool canMidairJump = true;
     #endregion
@@ -66,7 +66,7 @@ public class SCR_PlayerV3 : MonoBehaviour
 	{
         //Functions
 
-        if (usingNormalMovement)
+        if (!overrideNormalMovement)
         {
             if (touchingGround)
             {
@@ -135,13 +135,13 @@ public class SCR_PlayerV3 : MonoBehaviour
     void JumpCheck()
     {
         // Check what kind of jump should be performed, if any
-        if (touchingGround && canJump)
+        if (touchingGround && !overrideJump)
         {
             StartCoroutine(GroundJump());
             StartCoroutine(AirJumpCooldown());
             
         }
-        else if (canMidairJump && canJump)
+        else if (canMidairJump && !overrideJump)
         {
             StartCoroutine(MidairJump(jumpCooldown));
             canMidairJump = false;
@@ -176,7 +176,7 @@ public class SCR_PlayerV3 : MonoBehaviour
         // If button was pressed before cooldown ended, buffer the jump
         yield return new WaitForSeconds(buffer);
 
-        if (usingNormalMovement && !touchingGround)
+        if (!overrideNormalMovement && !touchingGround)
         {
             // oh god this hurts to look at
             rb.velocity = new Vector3(rb.velocity.x, 4f, rb.velocity.z);

@@ -520,7 +520,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   variables: {fileID: 11400000, guid: bfd262647dac4984a8274f73fee1748c, type: 2}
-  usingNormalMovement: 1
+  overrideNormalMovement: 0
+  overrideJump: 0
   touchingGround: 0
   canMidairJump: 1
   showGroundNormal: 1

@@ -200,8 +200,8 @@ public class SCR_Tongue : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
         // Deactivate normal movement
-        movement.usingNormalMovement = false;
-        movement.canJump = false;
+        movement.overrideNormalMovement = true;
+        movement.overrideJump = true;
         movement.canMidairJump = false;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationX;
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
@@ -228,8 +228,8 @@ public class SCR_Tongue : MonoBehaviour
         rb.velocity = rb.velocity.normalized * targetJointRb.angularVelocity.magnitude * 2;
 
         // Re-activate normal movement
-        movement.usingNormalMovement = true;
-        movement.canJump = true;
+        movement.overrideNormalMovement = false;
+        movement.overrideJump = false;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         // Refresh midair jump after swinging
@@ -291,7 +291,7 @@ public class SCR_Tongue : MonoBehaviour
         targetJoint.connectedBody = rb;
 
         // Disable jumping
-        movement.canJump = false;
+        movement.overrideJump = true;
 
         while (holdingTongueButton)
         {
@@ -307,7 +307,7 @@ public class SCR_Tongue : MonoBehaviour
         targetJoint.connectedBody = null;
 
         // Enable jumping
-        movement.canJump = true;
+        movement.overrideJump = false;
 
         StartCoroutine(TongueRetract(target.transform.position, 1));
     }
