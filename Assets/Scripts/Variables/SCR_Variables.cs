@@ -36,6 +36,7 @@ public class SCR_Variables : ScriptableObject
     [Range(0, 360)]
     public float maxTargetAngle = 90;
     public bool holdToTarget = true;
+    public AnimationCurve tongueAttackCurve;
     [Tooltip("Length of tongue while swinging")]
     [Min(0)]
     public float swingDistance = 1;

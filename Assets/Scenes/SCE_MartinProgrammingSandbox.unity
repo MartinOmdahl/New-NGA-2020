@@ -175,6 +175,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &1260466
 SphereCollider:
@@ -258,6 +260,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &1525725
 SphereCollider:
@@ -341,6 +345,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &18484920
 SphereCollider:
@@ -891,6 +897,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &55175697
 SphereCollider:
@@ -1523,6 +1531,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &154839962
 SphereCollider:
@@ -1924,6 +1934,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &200729892
 SphereCollider:
@@ -2082,6 +2094,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &235480456
 Transform:
@@ -2674,6 +2688,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &335463903
 Transform:
@@ -2822,6 +2838,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &440151646
 SphereCollider:
@@ -2984,6 +3002,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &451202205
 SphereCollider:
@@ -3584,6 +3604,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &513647046
 SphereCollider:
@@ -3667,6 +3689,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &533740105
 SphereCollider:
@@ -3908,6 +3932,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &649135693
 SphereCollider:
@@ -4461,6 +4487,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &756192859
 Transform:
@@ -4605,6 +4633,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &818489049
 Transform:
@@ -4974,6 +5004,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &876751718
 Transform:
@@ -5043,6 +5075,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &878971327
 SphereCollider:
@@ -6568,6 +6602,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &1112062245
 SphereCollider:
@@ -6797,6 +6833,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &1144405512
 SphereCollider:
@@ -7496,6 +7534,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &1234882613
 Transform:
@@ -7956,6 +7996,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &1282764331
 Transform:
@@ -8770,6 +8812,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &1565763798
 Transform:
@@ -9441,6 +9485,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &1667981748
 Transform:
@@ -9492,6 +9538,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &1680525737
 Transform:
@@ -11251,6 +11299,8 @@ MonoBehaviour:
   rewardType: 0
   rewardCount: 1
   isBeingEaten: 0
+  eventOnPull: 0
+  isBeingPulled: 0
   targetIconOffset: {x: 0, y: 0.5, z: 0}
 --- !u!135 &2090900189
 SphereCollider:

@@ -19,7 +19,37 @@ MonoBehaviour:
   playerTurnSpeed: 0.1
   Acceleration: 0.1
   jumpHeight: 1.5
+  airJumpCooldown: 0.5
   airControlPercent: 0.5
+  maxGroundAngle: 45
+  maxTargetDistance: 5
+  maxTargetAngle: 90
+  holdToTarget: 1
+  tongueAttackCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  swingDistance: 1
   sensitivity: 1
   distanceFromTarget: 3
   pitchMinMax: {x: -40, y: 85}

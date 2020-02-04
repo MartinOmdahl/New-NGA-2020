@@ -140,7 +140,7 @@ public class SCR_Tongue : MonoBehaviour
             // Linearly interpolate tongue's position from body to target
             // (promote speed to variable later)
             TongueDistance += 10 * Time.deltaTime;
-            tongueCollider.position = Vector3.Lerp(tongueParent.position, target.transform.position, TongueDistance);
+            tongueCollider.position = Vector3.Lerp(tongueParent.position, target.transform.position, variables.tongueAttackCurve.Evaluate(TongueDistance));
         }
 
         // Check what type of tongue interaction should be used
