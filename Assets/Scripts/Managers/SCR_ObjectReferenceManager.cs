@@ -11,6 +11,7 @@ public class SCR_ObjectReferenceManager : MonoBehaviour
         if(Instance == null)
         {
             Instance = this;
+            transform.parent = null;
         }
         else
         {
