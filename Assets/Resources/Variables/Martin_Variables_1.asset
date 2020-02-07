@@ -16,7 +16,7 @@ MonoBehaviour:
   holdToRun: 1
   walkSpeed: 4
   runSpeed: 8
-  playerTurnSpeed: 0.1
+  playerTurnSpeed: 0.07
   Acceleration: 0.1
   jumpHeight: 1.5
   airJumpCooldown: 0.4

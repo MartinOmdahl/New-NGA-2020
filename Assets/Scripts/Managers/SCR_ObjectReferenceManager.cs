@@ -23,4 +23,6 @@ public class SCR_ObjectReferenceManager : MonoBehaviour
     public List<SCR_TongueTarget> tongueTargets = new List<SCR_TongueTarget>();
 
     public Camera playerCamera;
+
+    public GameObject player;
 }

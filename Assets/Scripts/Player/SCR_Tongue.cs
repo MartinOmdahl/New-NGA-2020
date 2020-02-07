@@ -63,12 +63,23 @@ public class SCR_Tongue : MonoBehaviour
     }
 
     #region Targeting
+    /*
+     * This region contains the targeting behavior used to determine which object Tongue Attack should target.
+     * 
+     * FUNCTIONS IN THIS REGION:
+     * Auto Target
+     * Press Target
+     * Initiate Lock-On
+     * Unlock Targeting
+     * Locked Target
+     */
+
     void AutoTarget()
     {
         currentTarget = null;
 
         // Go through each target in scene. If it is within range & angle of player, and no other target is closer, set it as current target.
-        foreach(var target in SCR_ObjectReferenceManager.Instance.tongueTargets)
+        foreach (var target in SCR_ObjectReferenceManager.Instance.tongueTargets)
         {
             float targetDistance = Vector3.Distance(tongueParent.position, target.transform.position);
             bool targetInRange = targetDistance <= variables.maxTargetDistance;
@@ -129,13 +140,20 @@ public class SCR_Tongue : MonoBehaviour
 
     #endregion
 
-    #region Tongue attack & hold
+    #region Tongue attack & retract
+    /*
+     * This region contains the Tongue Attack and Retract that constitute the beginning and end of every tongue interaction.
+     * 
+     * FUNCTIONS IN THIS REGION:
+     * Tongue Attack
+     * Tongue Retract
+     */
     IEnumerator TongueAttack(SCR_TongueTarget target)
     {
         float TongueDistance = 0;
         while (TongueDistance < 1)
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
 
             // Linearly interpolate tongue's position from body to target
             // (promote speed to variable later)
@@ -176,6 +194,35 @@ public class SCR_Tongue : MonoBehaviour
         }
     }
 
+    IEnumerator TongueRetract(Vector3 targetPos, float startingDistance)
+    {
+        float TongueDistance = startingDistance;
+        while (TongueDistance > 0)
+        {
+            yield return null;
+
+            // Linearly interpolate tongue's position from target back to body 
+            // (promote speed to variable later)
+            TongueDistance -= 10 * Time.deltaTime;
+            tongueCollider.position = Vector3.Lerp(tongueParent.position, targetPos, TongueDistance);
+        }
+        tongueCollider.position = tongueParent.position;
+
+        tongueState = TongueState.Retracted;
+    }
+    #endregion
+
+    #region Tongue interactions
+    /*
+     * This region contains the various interactions that can be performed once tongue has hit a target.
+     * The type of interaction performed is determined by checking the targetType of the target object.
+     * 
+     * FUNCTIONS IN THIS REGION:
+     * Tongue Swing
+     * Tongue Eat
+     * Tongue Grab
+     */
+
     IEnumerator TongueSwing(SCR_TongueTarget target)
     {
         // Stop targeting
@@ -188,7 +235,7 @@ public class SCR_Tongue : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - tongueParent.position);
         transform.rotation = targetRotation;
         targetJoint.transform.rotation = targetRotation;
-       
+
         // Connect player to target joint
         targetJoint.connectedBody = rb;
 
@@ -209,9 +256,9 @@ public class SCR_Tongue : MonoBehaviour
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationZ;
 
         float swingTime = 0;
-        while (holdingTongueButton || swingTime < 0.65f )
+        while (holdingTongueButton || swingTime < 0.65f)
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
             swingTime += Time.deltaTime;
 
             // Add some forward rotation at the beginning of swing
@@ -239,7 +286,7 @@ public class SCR_Tongue : MonoBehaviour
 
         StartCoroutine(TongueRetract(target.transform.position, 1));
     }
-    
+
     IEnumerator TongueEat(SCR_TongueTarget target)
     {
         // Stop targeting
@@ -254,19 +301,18 @@ public class SCR_Tongue : MonoBehaviour
         float time = 0;
         while (time < 0.08f)
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
             time += Time.deltaTime / Time.timeScale;
             tongueCollider.position = target.transform.position;
         }
         Time.timeScale = 1;
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
 
-
         // Attach target to tongue
         target.transform.SetParent(tongueCollider);
         target.transform.localScale = target.transform.localScale * 0.75f;
 
-        // Retract tongue
+        // Start tongue retraction, wait until it finishes
         StartCoroutine(TongueRetract(target.transform.position, 1));
         yield return new WaitUntil(() => tongueState == TongueState.Retracted);
 
@@ -275,7 +321,7 @@ public class SCR_Tongue : MonoBehaviour
             // Give player reward
         }
 
-        // Destroy target
+        // Destroy target and remove it from list of tongue targets
         SCR_ObjectReferenceManager.Instance.tongueTargets.Remove(target);
         Destroy(target.gameObject);
     }
@@ -284,7 +330,8 @@ public class SCR_Tongue : MonoBehaviour
     {
         ConfigurableJoint targetJoint = target.GetComponentInChildren<ConfigurableJoint>();
 
-        // Turn player towards target
+        // Temporarily turn player towards target to set up correct joint anchor position
+        Quaternion playerStartingRotation = transform.rotation;
         Quaternion targetRotation = Quaternion.LookRotation(new Vector3(target.transform.position.x, tongueParent.position.y, target.transform.position.z) - tongueParent.position);
         transform.rotation = targetRotation;
         targetJoint.transform.rotation = targetRotation;
@@ -292,17 +339,53 @@ public class SCR_Tongue : MonoBehaviour
         // Connect player to target joint
         targetJoint.connectedBody = rb;
 
+        // Set player's rotation back to where it was
+        transform.rotation = playerStartingRotation;
+
+        // get distance to grabbed object (this is used to determine if player is pulling on it)
+        float maxTargetDistance = Vector3.Distance(tongueParent.position, targetJoint.transform.position);
+
         // Disable normal movement
-        //movement.overrideRotation = true;
+        movement.overrideRotation = true;
         movement.overrideJump = true;
 
-        while (holdingTongueButton)
+        float timeObjectPulled = 0;
+        while (holdingTongueButton /*Add check for forced grab release later*/ )
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
 
-            // Turn player towards target. This part is disabled until movement system stops depending on player's rotation.
-            //targetRotation = Quaternion.LookRotation(new Vector3(target.transform.position.x, tongueParent.position.y, target.transform.position.z) - tongueParent.position);
-            //transform.rotation = targetRotation;
+            // Turn player towards target
+            targetRotation = Quaternion.LookRotation(new Vector3(target.transform.position.x, tongueParent.position.y, target.transform.position.z) - tongueParent.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
+            targetJoint.transform.rotation = targetRotation;
+            
+            if(Vector3.Distance(tongueParent.position, targetJoint.transform.position) <= maxTargetDistance)
+            {
+                // Behavior when not pulling on target (player is closer than when it was grabbed)
+
+                // Allow free movement by updating joint's target distance
+                targetJoint.targetPosition = new Vector3(0, 0, maxTargetDistance-Vector3.Distance(tongueParent.position, targetJoint.transform.position));
+
+                // Tell target that it isn't being pulled
+                target.isBeingPulled = false;
+                timeObjectPulled = 0;
+            }
+            else 
+            {
+                // Behavior when pulling on target (player is farther away than when it was grabbed)
+
+                // restrict player from moving any farther away
+                targetJoint.targetPosition = new Vector3(0, 0, 0);
+
+                target.isBeingPulled = true;
+
+                // If pulling should trigger an event on target, trigger it
+                timeObjectPulled += Time.deltaTime;
+                if(timeObjectPulled >= target.timeToPull && target.eventOnPull)
+                {
+                    target.eventTriggered = true;
+                }
+            }
 
             tongueCollider.position = target.transform.position;
         }
@@ -314,23 +397,6 @@ public class SCR_Tongue : MonoBehaviour
         movement.overrideJump = false;
 
         StartCoroutine(TongueRetract(target.transform.position, 1));
-    }
-
-    IEnumerator TongueRetract(Vector3 targetPos, float startingDistance)
-    {
-        float TongueDistance = startingDistance;
-        while (TongueDistance > 0)
-        {
-            yield return new WaitForEndOfFrame();
-
-            // Linearly interpolate tongue's position from target back to body 
-            // (promote speed to variable later)
-            TongueDistance -= 10 * Time.deltaTime;
-            tongueCollider.position = Vector3.Lerp(tongueParent.position, targetPos, TongueDistance);
-        }
-        tongueCollider.position = tongueParent.position;
-
-        tongueState = TongueState.Retracted;
     }
     #endregion
 

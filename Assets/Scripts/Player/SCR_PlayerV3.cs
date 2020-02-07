@@ -33,9 +33,12 @@ public class SCR_PlayerV3 : MonoBehaviour
     #region Local Variables
     bool running;
 	float currentSpeed;
+    Vector3 moveDirection;
+	float moveRotationVelocity, moveSpeedVelocity;
 	float rotationVelocity, speedVelocity;
 	float targetRotation;
     int collisionCount;
+    int offGroundFrames;
     float jumpCooldown;
     Vector3 groundNormal;
     #endregion
@@ -63,7 +66,12 @@ public class SCR_PlayerV3 : MonoBehaviour
 		InputActions();
 	}
 
-	private void FixedUpdate()
+    private void Start()
+    {
+        SCR_ObjectReferenceManager.Instance.player = gameObject;
+    }
+
+    private void FixedUpdate()
 	{
         //Functions
 
@@ -91,23 +99,45 @@ public class SCR_PlayerV3 : MonoBehaviour
 
     void GroundMovement()
     {
+        /* OK, so this is gonna need some explanation
+         * This movement system originally worked by setting player's rotation, then moving them forward.
+         * I've changed this to make movement independent of player's rotation. But the code still works mostly the same:
+         * by setting a rotation and then moving player along the forward vector of that rotation. 
+         */
+
         //Get Player Input:
         Vector2 input = controls.Player.Movement.ReadValue<Vector2>();
 
-        //If Input then set Target Rotation & Smoothly Rotate in Degrees:
-        //if (input.magnitude > 0.1f)
-        //{
-        //    targetRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
-        //}
-        //transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, variables.playerTurnSpeed);
+        // Find rotation of direction player should move in (it's weird, but truuuuuuuuust me)
+        float targetMoveRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
+
+        float targetSpeed;
+        //If Input then set Target Rotation &Smoothly Rotate in Degrees:
+        if (input.magnitude > 0.1f)
+        {
+        //moveDirection = Vector3.up * Mathf.SmoothDampAngle(moveDirection.y, targetMoveRotation, ref moveRotationVelocity, variables.playerTurnSpeed);
+        moveDirection = Vector3.up * targetMoveRotation;
+
+            targetSpeed = (running ? variables.runSpeed : variables.walkSpeed) * input.magnitude;
+        }
+        else
+        {
+            targetSpeed = 0;
+        }
 
         //Check if Running & Set Speed Accordingly:
-        float targetSpeed = (running ? variables.runSpeed : variables.walkSpeed) * input.magnitude;
-        currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedVelocity, variables.Acceleration);
+        currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref moveSpeedVelocity, variables.Acceleration);
 
         //Move the Player:
-        Vector3 velocity = transform.forward * currentSpeed;
+        Vector3 velocity = (Quaternion.Euler(moveDirection) * Vector3.forward) * currentSpeed;
         rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+
+
+
+        // Should be updated to move along ground normal
+        // Player mesh should also be rotated to fit ground normal.
+
+        // Currently missing: Set move rotation in air as well
     }
 
     void AirMovement()
@@ -132,6 +162,14 @@ public class SCR_PlayerV3 : MonoBehaviour
         //rb.AddForce(velocity, ForceMode.Acceleration);
 
         rb.velocity = Vector3.Lerp(rb.velocity, new Vector3(velocity.x, rb.velocity.y, velocity.z), 0.1f);
+    }
+
+    void OnLanding()
+    {
+        // This function runs when player lands on ground after being in the air.
+
+        moveDirection = transform.eulerAngles;
+
     }
 
     #endregion
@@ -169,7 +207,7 @@ public class SCR_PlayerV3 : MonoBehaviour
         jumpCooldown = variables.airJumpCooldown;
         while (jumpCooldown > 0)
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
             jumpCooldown -= Time.deltaTime;
         }
         jumpCooldown = 0;
@@ -197,6 +235,10 @@ public class SCR_PlayerV3 : MonoBehaviour
 
     void GroundDetect()
     {
+        // Keep track of how many frames player has been in air;
+        if (!touchingGround)
+            offGroundFrames++;
+
         // Set touchingGround to false before checking for ground collision.
         // This works because FixedUpdate is before OnCollisionStay in execution order.
         touchingGround = false;
@@ -235,7 +277,11 @@ public class SCR_PlayerV3 : MonoBehaviour
             
             if (contactAngle < variables.maxGroundAngle)
             {
+                if (offGroundFrames > 1)
+                    OnLanding();
+
                 touchingGround = true;
+                offGroundFrames = 0;
                 groundNormal = contact.normal;
                 canMidairJump = true;
             }

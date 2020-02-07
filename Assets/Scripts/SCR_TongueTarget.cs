@@ -30,7 +30,10 @@ public class SCR_TongueTarget : MonoBehaviour
     // Grab variables
     [Tooltip("Whether pulling on this object triggers an event.")]
     public bool eventOnPull;
+    [Tooltip("How many seconds must object be pulled to trigger effect?")]
+    public float timeToPull = 1;
     public bool isBeingPulled;
+    public bool eventTriggered;
 
     public Vector3 targetIconOffset = new Vector3(0, 0.5f, 0);
     void Start()
@@ -74,6 +77,11 @@ public class DynamicVariables : Editor
 
             case SCR_TongueTarget.TargetType.Grab:
                 tongueTarget.eventOnPull = EditorGUILayout.Toggle("Event On Pull", tongueTarget.eventOnPull);
+
+                if (tongueTarget.eventOnPull)
+                {
+                    tongueTarget.timeToPull = EditorGUILayout.FloatField("Time To Pull", tongueTarget.timeToPull);
+                }
 
                 break;
 
