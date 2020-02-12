@@ -229,6 +229,7 @@ public class SCR_Tongue : MonoBehaviour
      * Tongue Swing
      * Tongue Eat
      * Tongue Grab
+     * Terminate Grab
      */
 
     IEnumerator TongueSwing(SCR_TongueTarget target)
