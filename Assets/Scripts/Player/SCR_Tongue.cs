@@ -24,10 +24,15 @@ public class SCR_Tongue : MonoBehaviour
     Rigidbody rb;
     #endregion
 
+    #region Public variables
+    #endregion
+
     #region Local variables
     SCR_TongueTarget currentTarget;
     bool lockedOnTarget;
     bool holdingTongueButton;
+    bool grabbedOnTarget;
+    bool grabTerminated;
     enum TongueState { Retracted, attacking, Attached}
     TongueState tongueState = TongueState.Retracted;
     #endregion
@@ -180,7 +185,10 @@ public class SCR_Tongue : MonoBehaviour
                 break;
 
             case SCR_TongueTarget.TargetType.Grab:
-                StartCoroutine(TongueGrab(target));
+                if (movement.touchingGround)
+                    StartCoroutine(TongueGrab(target));
+                else
+                    StartCoroutine(TongueRetract(target.transform.position, 1));
                 break;
 
             case SCR_TongueTarget.TargetType.Deflect:
@@ -321,13 +329,16 @@ public class SCR_Tongue : MonoBehaviour
             // Give player reward
         }
 
-        // Destroy target and remove it from list of tongue targets
-        SCR_ObjectReferenceManager.Instance.tongueTargets.Remove(target);
+        // Destroy target
         Destroy(target.gameObject);
     }
 
     IEnumerator TongueGrab(SCR_TongueTarget target)
     {
+        grabbedOnTarget = true;
+        
+        // Stop targeting
+        currentTarget = null;
         ConfigurableJoint targetJoint = target.GetComponentInChildren<ConfigurableJoint>();
 
         // Temporarily turn player towards target to set up correct joint anchor position
@@ -350,7 +361,7 @@ public class SCR_Tongue : MonoBehaviour
         movement.overrideJump = true;
 
         float timeObjectPulled = 0;
-        while (holdingTongueButton /*Add check for forced grab release later*/ )
+        while (holdingTongueButton && !grabTerminated && movement.touchingGround)
         {
             yield return null;
 
@@ -359,7 +370,7 @@ public class SCR_Tongue : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
             targetJoint.transform.rotation = targetRotation;
             
-            if(Vector3.Distance(tongueParent.position, targetJoint.transform.position) <= maxTargetDistance)
+            if(Vector3.Distance(tongueParent.position, targetJoint.transform.position) <= maxTargetDistance + 0.2f)
             {
                 // Behavior when not pulling on target (player is closer than when it was grabbed)
 
@@ -396,7 +407,19 @@ public class SCR_Tongue : MonoBehaviour
         movement.overrideRotation = false;
         movement.overrideJump = false;
 
+        target.isBeingPulled = false;
+        grabTerminated = false;
+        grabbedOnTarget = false;
+
         StartCoroutine(TongueRetract(target.transform.position, 1));
+    }
+
+    public void TerminateGrab()
+    {
+        if (grabbedOnTarget)
+        {
+            grabTerminated = true;
+        }
     }
     #endregion
 

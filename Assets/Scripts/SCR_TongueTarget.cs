@@ -36,11 +36,42 @@ public class SCR_TongueTarget : MonoBehaviour
     public bool eventTriggered;
 
     public Vector3 targetIconOffset = new Vector3(0, 0.5f, 0);
-    void Start()
+
+    private void OnEnable()
     {
-        // Add self to list of all tongue targets
-        // Need to be updated to remove if destroyed!
-        SCR_ObjectReferenceManager.Instance.tongueTargets.Add(this);
+        // Add reference to self to list of all tongue targets
+        if (SCR_ObjectReferenceManager.Instance != null)
+        {
+            SCR_ObjectReferenceManager.Instance.tongueTargets.Add(this);
+        }
+    }
+
+    private void Start()
+    {
+        // Scan through list of tongue targets. If self wasn't added yet, add self.
+        bool foundSelf = false;
+        foreach (var target in SCR_ObjectReferenceManager.Instance.tongueTargets)
+        {
+            if (target == this)
+            {
+                foundSelf = true;
+                break;
+            }
+        }
+
+        if (!foundSelf)
+        {
+            SCR_ObjectReferenceManager.Instance.tongueTargets.Add(this);
+        }
+    }
+
+    private void OnDisable()
+    {
+        // Remove reference to self from list of all tongue targets
+        if (SCR_ObjectReferenceManager.Instance != null)
+        {
+            SCR_ObjectReferenceManager.Instance.tongueTargets.Remove(this);
+        }
     }
 
     private void OnDrawGizmosSelected()
