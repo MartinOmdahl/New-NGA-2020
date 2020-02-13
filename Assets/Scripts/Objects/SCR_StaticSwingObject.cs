@@ -10,6 +10,8 @@ public class SCR_StaticSwingObject : MonoBehaviour
     SCR_TongueTarget targetComponent;
 
     float randomAnimationOffset;
+    Vector3 defaultPosition;
+    float sineTime;
 
     void Awake()
     {
@@ -17,18 +19,19 @@ public class SCR_StaticSwingObject : MonoBehaviour
         targetComponent = GetComponent<SCR_TongueTarget>();
 
         randomAnimationOffset = Random.Range(-4, 4);
+        defaultPosition = transform.position;
     }
 
     void Update()
     {
         if (targetComponent.isBeingSwung)
         {
-            mesh.position = Vector3.Lerp(mesh.position, transform.position, 10 * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, defaultPosition, 10 * Time.deltaTime);
         }
         else
         {
-            float YPos = transform.position.y + Mathf.Sin(Time.time * 4 + randomAnimationOffset) * 0.05f;
-            mesh.position = new Vector3(transform.position.x, YPos, transform.position.z);
+            float YPos = defaultPosition.y + Mathf.Sin(Time.time * 3 + randomAnimationOffset) * 0.05f;
+            transform.position = new Vector3(defaultPosition.x, YPos, defaultPosition.z);
         }
     }
 }

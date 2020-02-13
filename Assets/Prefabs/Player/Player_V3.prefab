@@ -325,6 +325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tongueTargets: []
   playerCamera: {fileID: 2998898232774395138}
+  player: {fileID: 0}
 --- !u!1 &2905972341165884809
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,7 +572,7 @@ MonoBehaviour:
   overrideRotation: 0
   touchingGround: 0
   canMidairJump: 1
-  showGroundNormal: 0
+  showGroundNormal: 1
 --- !u!114 &876658418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -905,7 +906,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7bf9683523bbebf448b5d4523e83c729, type: 2}
+  - {fileID: 2100000, guid: 0289f0056cb3ce84da7aabf81556260e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1016,7 +1017,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7bf9683523bbebf448b5d4523e83c729, type: 2}
+  - {fileID: 2100000, guid: 6b56cbd53fcb19c47b48ddd25c398b78, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
