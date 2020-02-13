@@ -9,23 +9,26 @@ public class SCR_StaticSwingObject : MonoBehaviour
     ConfigurableJoint joint;
     SCR_TongueTarget targetComponent;
 
+    float randomAnimationOffset;
+
     void Awake()
     {
         joint = GetComponentInChildren<ConfigurableJoint>();
         targetComponent = GetComponent<SCR_TongueTarget>();
+
+        randomAnimationOffset = Random.Range(-4, 4);
     }
 
     void Update()
     {
-
-        float YPos = transform.position.y + Mathf.Sin(Time.time) * 2;
-
-
-        mesh.position = new Vector3(transform.position.x, 0, transform.position.z);
-
-
-
+        if (targetComponent.isBeingSwung)
+        {
+            mesh.position = Vector3.Lerp(mesh.position, transform.position, 10 * Time.deltaTime);
+        }
+        else
+        {
+            float YPos = transform.position.y + Mathf.Sin(Time.time * 4 + randomAnimationOffset) * 0.05f;
+            mesh.position = new Vector3(transform.position.x, YPos, transform.position.z);
+        }
     }
-
-
 }
