@@ -51,6 +51,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   swingDistance: 1
   sensitivity: 180
-  distanceFromTarget: 5
+  distanceFromTarget: 7
   pitchMinMax: {x: -40, y: 85}
   camTurnSpeed: 0.1

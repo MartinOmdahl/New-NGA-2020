@@ -29,12 +29,12 @@ public class SCR_Tongue : MonoBehaviour
 
     #region Local variables
     SCR_TongueTarget currentTarget;
+    enum TongueState { Retracted, Attacking, Attached, Retracting }
+    TongueState tongueState = TongueState.Retracted;
     bool lockedOnTarget;
     bool holdingTongueButton;
     bool grabbedOnTarget;
     bool grabTerminated;
-    enum TongueState { Retracted, attacking, Attached}
-    TongueState tongueState = TongueState.Retracted;
     #endregion
 
     void Awake()
@@ -42,6 +42,8 @@ public class SCR_Tongue : MonoBehaviour
         controls = new InputControls();
         rb = GetComponent<Rigidbody>();
         movement = GetComponent<SCR_PlayerV3>();
+
+        tongueState = TongueState.Retracted;
 
         InputActions();
     }
@@ -63,7 +65,7 @@ public class SCR_Tongue : MonoBehaviour
             && currentTarget != null)
         {
             StartCoroutine(TongueAttack(currentTarget));
-            tongueState = TongueState.attacking;
+            tongueState = TongueState.Attacking;
         }
     }
 
@@ -204,6 +206,8 @@ public class SCR_Tongue : MonoBehaviour
 
     IEnumerator TongueRetract(Vector3 targetPos, float startingDistance)
     {
+        tongueState = TongueState.Retracting;
+
         float TongueDistance = startingDistance;
         while (TongueDistance > 0)
         {
@@ -236,6 +240,7 @@ public class SCR_Tongue : MonoBehaviour
     {
         // Stop targeting
         currentTarget = null;
+        tongueState = TongueState.Attached;
 
         ConfigurableJoint targetJoint = target.GetComponentInChildren<ConfigurableJoint>();
         Rigidbody targetJointRb = targetJoint.GetComponent<Rigidbody>();
@@ -244,6 +249,9 @@ public class SCR_Tongue : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - tongueParent.position);
         transform.rotation = targetRotation;
         targetJoint.transform.rotation = targetRotation;
+
+        // Tell target that player is swinging on it
+        target.isBeingSwung = true;
 
         // Connect player to target joint
         targetJoint.connectedBody = rb;
@@ -280,6 +288,9 @@ public class SCR_Tongue : MonoBehaviour
         }
         // Break connection to joint
         targetJoint.connectedBody = null;
+
+        // Tell target that player stopped swinging on it
+        target.isBeingSwung = false;
 
         // Set velocity on swing end. Change this in future to convert linear velocity to angular
         rb.velocity = rb.velocity.normalized * targetJointRb.angularVelocity.magnitude * 2;
@@ -465,7 +476,7 @@ public class SCR_Tongue : MonoBehaviour
             // Show target icon and wire sphere on current target
             targetIconPosition = Vector3.Lerp(targetIconPosition, currentTarget.transform.position, 20 * Time.deltaTime);
             targetSphereSize = Mathf.MoveTowards(targetSphereSize, 0.5f, 4 * Time.deltaTime);
-            Gizmos.DrawIcon(targetIconPosition + currentTarget.targetIconOffset, "SPR_TargetTriangle128.png", false, targetingColor);
+            Gizmos.DrawIcon(targetIconPosition + currentTarget.transform.TransformDirection(currentTarget.targetIconOffset), "SPR_TargetTriangle128.png", false, targetingColor);
         }
         else
         {

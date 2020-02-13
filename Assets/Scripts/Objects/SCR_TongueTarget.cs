@@ -18,6 +18,7 @@ public class SCR_TongueTarget : MonoBehaviour
     // Swing variables
     [Tooltip("Whether player can start swing while grounded")]
     public bool canSwingFromGround = true;
+    public bool isBeingSwung;
 
     // Eat variables
     [Tooltip("Whether player gets something after eating this object")]
@@ -77,7 +78,7 @@ public class SCR_TongueTarget : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         // Visualize target icon position
-        Gizmos.DrawIcon(transform.position + targetIconOffset, "SPR_TargetTriangle128.png", false, Color.white);
+        Gizmos.DrawIcon(transform.position + transform.TransformDirection(targetIconOffset), "SPR_TargetTriangle128.png", false, Color.white);
     }
 }
 
