@@ -572,7 +572,7 @@ MonoBehaviour:
   overrideRotation: 0
   touchingGround: 0
   canMidairJump: 1
-  showGroundNormal: 1
+  showGroundNormal: 0
 --- !u!114 &876658418
 MonoBehaviour:
   m_ObjectHideFlags: 0

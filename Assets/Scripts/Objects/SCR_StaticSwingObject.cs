@@ -30,7 +30,7 @@ public class SCR_StaticSwingObject : MonoBehaviour
         }
         else
         {
-            float YPos = defaultPosition.y + Mathf.Sin(Time.time * 3 + randomAnimationOffset) * 0.05f;
+            float YPos = defaultPosition.y + Mathf.Sin(Time.time * 3 + randomAnimationOffset) * 0.08f;
             transform.position = new Vector3(defaultPosition.x, YPos, defaultPosition.z);
         }
     }
