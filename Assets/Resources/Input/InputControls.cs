@@ -97,6 +97,14 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""3a4c4bfb-6c70-49ab-b8d7-2e1809f27fe8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -220,8 +228,25 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""action"": ""Tongue Button Release"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""28094fa8-94ce-48d3-a1f5-1d704b33cb18"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Menu"",
+            ""id"": ""a36616ec-d836-4ab4-a2fb-a549b4956c59"",
+            ""actions"": [],
+            ""bindings"": []
         }
     ],
     ""controlSchemes"": []
@@ -238,6 +263,9 @@ public class @InputControls : IInputActionCollection, IDisposable
         m_Player_HoldtoTargetRelease = m_Player.FindAction("Hold to Target (Release)", throwIfNotFound: true);
         m_Player_TongueButtonPress = m_Player.FindAction("Tongue Button Press", throwIfNotFound: true);
         m_Player_TongueButtonRelease = m_Player.FindAction("Tongue Button Release", throwIfNotFound: true);
+        m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        // Menu
+        m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -297,6 +325,7 @@ public class @InputControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_HoldtoTargetRelease;
     private readonly InputAction m_Player_TongueButtonPress;
     private readonly InputAction m_Player_TongueButtonRelease;
+    private readonly InputAction m_Player_Pause;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
@@ -311,6 +340,7 @@ public class @InputControls : IInputActionCollection, IDisposable
         public InputAction @HoldtoTargetRelease => m_Wrapper.m_Player_HoldtoTargetRelease;
         public InputAction @TongueButtonPress => m_Wrapper.m_Player_TongueButtonPress;
         public InputAction @TongueButtonRelease => m_Wrapper.m_Player_TongueButtonRelease;
+        public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -350,6 +380,9 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @TongueButtonRelease.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTongueButtonRelease;
                 @TongueButtonRelease.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTongueButtonRelease;
                 @TongueButtonRelease.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTongueButtonRelease;
+                @Pause.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -384,10 +417,38 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @TongueButtonRelease.started += instance.OnTongueButtonRelease;
                 @TongueButtonRelease.performed += instance.OnTongueButtonRelease;
                 @TongueButtonRelease.canceled += instance.OnTongueButtonRelease;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Menu
+    private readonly InputActionMap m_Menu;
+    private IMenuActions m_MenuActionsCallbackInterface;
+    public struct MenuActions
+    {
+        private @InputControls m_Wrapper;
+        public MenuActions(@InputControls wrapper) { m_Wrapper = wrapper; }
+        public InputActionMap Get() { return m_Wrapper.m_Menu; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MenuActions set) { return set.Get(); }
+        public void SetCallbacks(IMenuActions instance)
+        {
+            if (m_Wrapper.m_MenuActionsCallbackInterface != null)
+            {
+            }
+            m_Wrapper.m_MenuActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+            }
+        }
+    }
+    public MenuActions @Menu => new MenuActions(this);
     public interface IPlayerActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -400,5 +461,9 @@ public class @InputControls : IInputActionCollection, IDisposable
         void OnHoldtoTargetRelease(InputAction.CallbackContext context);
         void OnTongueButtonPress(InputAction.CallbackContext context);
         void OnTongueButtonRelease(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
+    }
+    public interface IMenuActions
+    {
     }
 }

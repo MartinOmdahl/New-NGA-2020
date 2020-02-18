@@ -66,11 +66,6 @@ public class SCR_PlayerV3 : MonoBehaviour
 		InputActions();
 	}
 
-    private void Start()
-    {
-        SCR_ObjectReferenceManager.Instance.player = gameObject;
-    }
-
     private void FixedUpdate()
 	{
         //Functions

@@ -25,4 +25,7 @@ public class SCR_ObjectReferenceManager : MonoBehaviour
     public Camera playerCamera;
 
     public GameObject player;
+
+    public CanvasGroup pauseMenu;
+    public CanvasGroup gameOverMenu;
 }

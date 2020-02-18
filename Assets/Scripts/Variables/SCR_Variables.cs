@@ -42,6 +42,10 @@ public class SCR_Variables : ScriptableObject
     public float swingDistance = 1;
 
 
+    [Header("Player misc")]
+    public int maxHealth = 3;
+
+
 	[Header("Camera")]
 	public float sensitivity = 1;
 	public float distanceFromTarget = 3;

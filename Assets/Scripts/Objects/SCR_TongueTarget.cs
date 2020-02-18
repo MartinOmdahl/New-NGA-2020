@@ -23,8 +23,8 @@ public class SCR_TongueTarget : MonoBehaviour
     // Eat variables
     [Tooltip("Whether player gets something after eating this object")]
     public bool HasReward;
-    public enum RewardType { TempReward1, TempReward2, TempReward3}
-    public RewardType rewardType = RewardType.TempReward1;
+    public enum RewardType { Coin, TempReward2, TempReward3}
+    public RewardType rewardType = RewardType.Coin;
     public int rewardCount = 1;
     public bool isBeingEaten;
 
