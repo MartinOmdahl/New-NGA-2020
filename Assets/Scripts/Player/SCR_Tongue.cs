@@ -21,6 +21,7 @@ public class SCR_Tongue : MonoBehaviour
     public Transform tongueCollider;
     InputControls controls;
     SCR_PlayerV3 movement;
+    SCR_VarManager varManager;
     Rigidbody rb;
     #endregion
 
@@ -46,6 +47,11 @@ public class SCR_Tongue : MonoBehaviour
         tongueState = TongueState.Retracted;
 
         InputActions();
+    }
+
+    private void Start()
+    {
+        varManager = SCR_VarManager.Instance;
     }
 
     void Update()
@@ -336,9 +342,21 @@ public class SCR_Tongue : MonoBehaviour
         StartCoroutine(TongueRetract(target.transform.position, 1));
         yield return new WaitUntil(() => tongueState == TongueState.Retracted);
 
+        // Give player reward if they should get it
         if (target.HasReward)
         {
-            // Give player reward
+            switch (target.rewardType)
+            {
+                case SCR_TongueTarget.RewardType.Coin:
+                    varManager.currentCoins += target.rewardCount;
+                    // [Play coin sound]
+                    break;
+                case SCR_TongueTarget.RewardType.TempReward2:
+                    // [Give player reward type]
+                    break;
+            }
+
+            // [Play animation]
         }
 
         // Destroy target

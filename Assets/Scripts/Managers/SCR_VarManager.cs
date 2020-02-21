@@ -23,6 +23,7 @@ public class SCR_VarManager : MonoBehaviour
 
     [Header("Player")]
     public int currentCoins;
+    public int currentStars;
     public int currentHealth;
 
     [Header("Gameplay")]
