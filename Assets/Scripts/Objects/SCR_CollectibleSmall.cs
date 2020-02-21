@@ -33,6 +33,7 @@ public class SCR_CollectibleSmall : MonoBehaviour
         if (other.CompareTag("Player") && useTrigger)
         {
             GetCollected();
+            useTrigger = false;
         }
     }
 

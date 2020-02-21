@@ -22,9 +22,12 @@ public class SCR_VarManager : MonoBehaviour
     #endregion
 
     [Header("Player")]
+    public int currentHealth;
+
+    [Header("Collectibles")]
     public int currentCoins;
     public int currentStars;
-    public int currentHealth;
+    public List<int> CollectedStars = new List<int>();
 
     [Header("Gameplay")]
     public bool GamePaused = false;
