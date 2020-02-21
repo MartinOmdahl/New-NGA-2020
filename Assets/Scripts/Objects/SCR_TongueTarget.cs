@@ -103,6 +103,7 @@ public class DynamicVariables : Editor
                 if (tongueTarget.HasReward)
                 {
                     tongueTarget.rewardType = (SCR_TongueTarget.RewardType)EditorGUILayout.EnumPopup("Reward Type", tongueTarget.rewardType);
+
                     tongueTarget.rewardCount = EditorGUILayout.IntField("Count", tongueTarget.rewardCount);
                 }
                 break;
