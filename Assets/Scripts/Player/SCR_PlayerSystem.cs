@@ -12,14 +12,16 @@ public class SCR_PlayerSystem : MonoBehaviour
 
     void Start()
     {
-        SCR_ObjectReferenceManager.Instance.player = gameObject;
-
         varManager = SCR_VarManager.Instance;
         objectRefs = SCR_ObjectReferenceManager.Instance;
 
+        objectRefs.player = gameObject;
         varManager.currentHealth = variables.maxHealth;
     }
-
+    private void OnDisable()
+    {
+        objectRefs.player = null;
+    }
 
     void Update()
     {
@@ -38,4 +40,5 @@ public class SCR_PlayerSystem : MonoBehaviour
 
         print("YOU DIED");
     }
+
 }
