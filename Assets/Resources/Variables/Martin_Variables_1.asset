@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravity: -15
   holdToRun: 1
-  walkSpeed: 4
+  walkSpeed: 6
   runSpeed: 8
   playerTurnSpeed: 0.07
   Acceleration: 0.1
@@ -50,6 +50,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   swingDistance: 1
+  maxHealth: 3
   sensitivity: 180
   distanceFromTarget: 7
   pitchMinMax: {x: -40, y: 85}

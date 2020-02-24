@@ -16,6 +16,9 @@ public class SCR_TongueStretchProto : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (SCR_ObjectReferenceManager.Instance.player == null)
+            Destroy(gameObject);
+
         transform.position = tongueParent.position;
         transform.LookAt(tongueCollider.position, Vector3.up);
         transform.localScale = new Vector3(1, 1, Vector3.Distance(transform.position, tongueCollider.position));
