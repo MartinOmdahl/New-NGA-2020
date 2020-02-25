@@ -32,11 +32,11 @@ public class SCR_RepositionPlayerObject : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Joystick1Button6))
+        if (Input.GetKeyDown(KeyCode.JoystickButton6))
         {
             GoToOrigin();
         }
-        if (Input.GetKeyDown(KeyCode.Joystick1Button0))
+        if (Input.GetKeyDown(KeyCode.JoystickButton0))
         {
             InstantiatePlayer();
         }
