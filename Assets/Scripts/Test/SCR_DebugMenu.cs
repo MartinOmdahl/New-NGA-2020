@@ -82,7 +82,7 @@ public class SCR_DebugMenu : MonoBehaviour
 
         // Collected stars button
         collectedStarsText.SetText(varManager.currentStars.ToString());
-        int starIncrement = Input.GetKey(KeyCode.Joystick1Button2) ? 10 : 1;
+        int starIncrement = Input.GetKey(KeyCode.JoystickButton2) ? 10 : 1;
         if (EventSystem.current.currentSelectedGameObject == collectedStarsButton.gameObject)
         {
             // Increment / decrement current stars on joystick left / right
@@ -98,7 +98,7 @@ public class SCR_DebugMenu : MonoBehaviour
 
         // Collected coins button
         collectedCoinsText.SetText(varManager.currentCoins.ToString());
-        int coinIncrement = Input.GetKey(KeyCode.Joystick1Button2) ? 10 : 1;
+        int coinIncrement = Input.GetKey(KeyCode.JoystickButton2) ? 10 : 1;
         if (EventSystem.current.currentSelectedGameObject == collectedCoinsButton.gameObject)
         {
             // Increment / decrement current stars on joystick left / right
