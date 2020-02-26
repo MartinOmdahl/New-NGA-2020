@@ -17,11 +17,14 @@ public class SCR_Tongue : MonoBehaviour
 
     #region References
     public SCR_Variables variables;
-    public Transform tongueParent;
+    public Transform tongueMeshAnchor;
+    public Transform tongueTargetAnchor;
     public Transform tongueCollider;
     InputControls controls;
     SCR_PlayerV3 movement;
     SCR_VarManager varManager;
+    SCR_ObjectReferenceManager objectRefs;
+    SCR_TargetingIcon targetIcon;
     Rigidbody rb;
     #endregion
 
@@ -52,6 +55,7 @@ public class SCR_Tongue : MonoBehaviour
     private void Start()
     {
         varManager = SCR_VarManager.Instance;
+        objectRefs = SCR_ObjectReferenceManager.Instance;
     }
 
     void Update()
@@ -73,6 +77,9 @@ public class SCR_Tongue : MonoBehaviour
             StartCoroutine(TongueAttack(currentTarget));
             tongueState = TongueState.Attacking;
         }
+
+        // Set target icon's target
+        objectRefs.targetIcon.target = currentTarget;
     }
 
     #region Targeting
@@ -94,13 +101,13 @@ public class SCR_Tongue : MonoBehaviour
         // Go through each target in scene. If it is within range & angle of player, and no other target is closer, set it as current target.
         foreach (var target in SCR_ObjectReferenceManager.Instance.tongueTargets)
         {
-            float targetDistance = Vector3.Distance(tongueParent.position, target.transform.position);
+            float targetDistance = Vector3.Distance(tongueTargetAnchor.position, target.transform.position);
             bool targetInRange = targetDistance <= variables.maxTargetDistance;
-            float angleToTarget = Quaternion.Angle(tongueParent.rotation, Quaternion.LookRotation((target.transform.position - tongueParent.position).normalized, Vector3.up));
+            float angleToTarget = Quaternion.Angle(tongueTargetAnchor.rotation, Quaternion.LookRotation((target.transform.position - tongueMeshAnchor.position).normalized, Vector3.up));
 
             if (targetInRange 
                 && angleToTarget < variables.maxTargetAngle
-                && (currentTarget == null || targetDistance < Vector3.Distance(tongueParent.position, currentTarget.transform.position)))
+                && (currentTarget == null || targetDistance < Vector3.Distance(tongueTargetAnchor.position, currentTarget.transform.position)))
             {
                 currentTarget = target;
             }
@@ -139,7 +146,7 @@ public class SCR_Tongue : MonoBehaviour
 
     void LockedTarget()
     {
-        float targetDistance = Vector3.Distance(tongueParent.position, currentTarget.transform.position);
+        float targetDistance = Vector3.Distance(tongueTargetAnchor.position, currentTarget.transform.position);
 
         if (targetDistance <= variables.maxTargetDistance && currentTarget != null)
         {
@@ -171,7 +178,7 @@ public class SCR_Tongue : MonoBehaviour
             // Linearly interpolate tongue's position from body to target
             // (promote speed to variable later)
             TongueDistance += 10 * Time.deltaTime;
-            tongueCollider.position = Vector3.Lerp(tongueParent.position, target.transform.position, variables.tongueAttackCurve.Evaluate(TongueDistance));
+            tongueCollider.position = Vector3.Lerp(tongueMeshAnchor.position, target.transform.position, variables.tongueAttackCurve.Evaluate(TongueDistance));
         }
 
         // Check what type of tongue interaction should be used
@@ -222,9 +229,9 @@ public class SCR_Tongue : MonoBehaviour
             // Linearly interpolate tongue's position from target back to body 
             // (promote speed to variable later)
             TongueDistance -= 10 * Time.deltaTime;
-            tongueCollider.position = Vector3.Lerp(tongueParent.position, targetPos, TongueDistance);
+            tongueCollider.position = Vector3.Lerp(tongueMeshAnchor.position, targetPos, TongueDistance);
         }
-        tongueCollider.position = tongueParent.position;
+        tongueCollider.position = tongueMeshAnchor.position;
 
         tongueState = TongueState.Retracted;
     }
@@ -252,7 +259,7 @@ public class SCR_Tongue : MonoBehaviour
         Rigidbody targetJointRb = targetJoint.GetComponent<Rigidbody>();
 
         // Turn player towards target
-        Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - tongueParent.position);
+        Quaternion targetRotation = Quaternion.LookRotation(target.transform.position - tongueTargetAnchor.position);
         transform.rotation = targetRotation;
         targetJoint.transform.rotation = targetRotation;
 
@@ -263,7 +270,7 @@ public class SCR_Tongue : MonoBehaviour
         targetJoint.connectedBody = rb;
 
         // Set target distance while swinging (promote to variable later)
-        targetJoint.targetPosition = new Vector3(0, 0, Vector3.Distance(tongueParent.position, targetJoint.transform.position) - variables.swingDistance);
+        targetJoint.targetPosition = new Vector3(0, 0, Vector3.Distance(tongueTargetAnchor.position, targetJoint.transform.position) - variables.swingDistance);
 
         // Set initial swing velocity. Change this in future to convert linear velocity to angular
         //rb.velocity = rb.velocity.normalized * 7;
@@ -373,7 +380,7 @@ public class SCR_Tongue : MonoBehaviour
 
         // Temporarily turn player towards target to set up correct joint anchor position
         Quaternion playerStartingRotation = transform.rotation;
-        Quaternion targetRotation = Quaternion.LookRotation(new Vector3(target.transform.position.x, tongueParent.position.y, target.transform.position.z) - tongueParent.position);
+        Quaternion targetRotation = Quaternion.LookRotation(new Vector3(target.transform.position.x, tongueTargetAnchor.position.y, target.transform.position.z) - tongueTargetAnchor.position);
         transform.rotation = targetRotation;
         targetJoint.transform.rotation = targetRotation;
 
@@ -384,7 +391,7 @@ public class SCR_Tongue : MonoBehaviour
         transform.rotation = playerStartingRotation;
 
         // get distance to grabbed object (this is used to determine if player is pulling on it)
-        float maxTargetDistance = Vector3.Distance(tongueParent.position, targetJoint.transform.position);
+        float maxTargetDistance = Vector3.Distance(tongueTargetAnchor.position, targetJoint.transform.position);
 
         // Disable normal movement
         movement.overrideRotation = true;
@@ -396,16 +403,16 @@ public class SCR_Tongue : MonoBehaviour
             yield return null;
 
             // Turn player towards target
-            targetRotation = Quaternion.LookRotation(new Vector3(target.transform.position.x, tongueParent.position.y, target.transform.position.z) - tongueParent.position);
+            targetRotation = Quaternion.LookRotation(new Vector3(target.transform.position.x, tongueTargetAnchor.position.y, target.transform.position.z) - tongueTargetAnchor.position);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
             targetJoint.transform.rotation = targetRotation;
             
-            if(Vector3.Distance(tongueParent.position, targetJoint.transform.position) <= maxTargetDistance + 0.2f)
+            if(Vector3.Distance(tongueTargetAnchor.position, targetJoint.transform.position) <= maxTargetDistance + 0.2f)
             {
                 // Behavior when not pulling on target (player is closer than when it was grabbed)
 
                 // Allow free movement by updating joint's target distance
-                targetJoint.targetPosition = new Vector3(0, 0, maxTargetDistance-Vector3.Distance(tongueParent.position, targetJoint.transform.position));
+                targetJoint.targetPosition = new Vector3(0, 0, maxTargetDistance-Vector3.Distance(tongueTargetAnchor.position, targetJoint.transform.position));
 
                 // Tell target that it isn't being pulled
                 target.isBeingPulled = false;

@@ -23,7 +23,7 @@ MonoBehaviour:
   airControlPercent: 0.5
   maxGroundAngle: 45
   maxTargetDistance: 5
-  maxTargetAngle: 100
+  maxTargetAngle: 90
   holdToTarget: 1
   tongueAttackCurve:
     serializedVersion: 2

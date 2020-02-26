@@ -20,6 +20,8 @@ public class SCR_ObjectReferenceManager : MonoBehaviour
     }
     #endregion
 
+    public SCR_Variables variables;
+
     public List<SCR_TongueTarget> tongueTargets = new List<SCR_TongueTarget>();
 
     public Camera playerCamera;
@@ -28,4 +30,6 @@ public class SCR_ObjectReferenceManager : MonoBehaviour
 
     public CanvasGroup pauseMenu;
     public CanvasGroup gameOverMenu;
+
+    public SCR_TargetingIcon targetIcon;
 }
