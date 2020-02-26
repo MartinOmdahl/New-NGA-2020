@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class SCR_Lever : MonoBehaviour
 {
-    public bool useTimer;
-    public float timeActive;
+    public enum LeverType { Timer, TwoWay, SingleUse}
+    public LeverType leverType = LeverType.Timer;
+    public float timerDuration;
     public Transform stickTransform;
 
     public bool activated;
@@ -24,40 +25,121 @@ public class SCR_Lever : MonoBehaviour
 
     void Update()
     {
-        if (targetComponent.eventTriggered && !activated)
+        if (targetComponent != null 
+            && targetComponent.eventTriggered)
         {
-            StartCoroutine(Activate());
+            switch (leverType)
+            {
+                case LeverType.Timer:
+                    StartCoroutine(TimerActivate());
+                    break;
+                case LeverType.TwoWay:
+                    StartCoroutine(TwoWayActivate());
+                    break;
+                case LeverType.SingleUse:
+                    StartCoroutine(SingleUseActivate());
+                    break;
+            }
         }
-        print("Stick angle is" + stickTransform.localRotation.eulerAngles);
     }
 
-    IEnumerator Activate()
+    IEnumerator SingleUseActivate()
     {
+        // Destroy tongue target
+        SCR_ObjectReferenceManager.Instance.player.GetComponent<SCR_Tongue>().TerminateGrab();
         targetComponent.eventTriggered = false;
         targetComponent.enabled = false;
-        SCR_ObjectReferenceManager.Instance.player.GetComponent<SCR_Tongue>().TerminateGrab();
 
 
-        //int i = 0;
-        //while (stickTransform.localEulerAngles.x > 45.1f)
-        //{
-        //    i++;
-        //    //print("looped through function " + i + " times. Angle is " + (stickTransform.localEulerAngles.x));  
-
-        //    yield return null;
-        //    stickTransform.localRotation = Quaternion.Slerp(stickTransform.localRotation, Quaternion.Euler(45, 0, 0), 2 * Time.deltaTime);
-        //}
-
+        // Play flip animation
         anim.SetTrigger("FlipA");
         animationPlaying = true;
         yield return new WaitUntil(()=> animationPlaying == false);
 
-        //stickTransform.localEulerAngles = new Vector3(45, 0, 0);
+        // Break stick by activating rigidbody
+        Rigidbody stickRb = stickTransform.GetComponent<Rigidbody>();
+        stickRb.isKinematic = false;
+        stickRb.AddRelativeForce(0, 0, -3, ForceMode.Impulse);
+        stickRb.angularVelocity = new Vector3(88, 0, 0);
+
+        // Despawn stick
+        yield return new WaitForSeconds(3);
+        Destroy(stickTransform.gameObject);
 
         activated = true;
+    }
+
+    IEnumerator TimerActivate()
+    {
+        // Disable tongue target
+        SCR_ObjectReferenceManager.Instance.player.GetComponent<SCR_Tongue>().TerminateGrab();
+        targetComponent.eventTriggered = false;
+        targetComponent.enabled = false;
+
+        // Play flip animation A
+        anim.SetTrigger("FlipA");
+        animationPlaying = true;
+        yield return new WaitUntil(()=> animationPlaying == false);
+        stickTransform.localEulerAngles = new Vector3(45, 0, 0);
+
+        activated = true;
+
+        // Wait for timer to finish
+        float t = 0;
+        while (t < timerDuration)
+        {
+            yield return null;
+            float tRoundedDown = Mathf.Floor(t);
+            t += Time.deltaTime;
+
+            if(Mathf.Floor(t) > tRoundedDown)
+            {
+                // [play tick sound every time a whole second has passed]
+            }
+        }
+
+        // Play flip animation B
+        anim.SetTrigger("FlipB");
+        animationPlaying = true;
+        yield return new WaitUntil(() => animationPlaying == false);
+
+        activated = false;
+
+        // Enable tongue target
         targetComponent.enabled = true;
         targetComponent.transform.eulerAngles = Vector3.zero;
+    }
 
+    IEnumerator TwoWayActivate()
+    {
+        // Disable tongue target
+        SCR_ObjectReferenceManager.Instance.player.GetComponent<SCR_Tongue>().TerminateGrab();
+        targetComponent.eventTriggered = false;
+        targetComponent.enabled = false;
+
+        if (activated)
+        {
+            // Play flip animation B
+            anim.SetTrigger("FlipB");
+            animationPlaying = true;
+            yield return new WaitUntil(() => animationPlaying == false);
+
+            activated = false;
+        }
+        else
+        {
+            // Play flip animation A
+            anim.SetTrigger("FlipA");
+            animationPlaying = true;
+            yield return new WaitUntil(() => animationPlaying == false);
+            stickTransform.localEulerAngles = new Vector3(45, 0, 0);
+
+            activated = true;
+        }
+
+        // Enable tongue target
+        targetComponent.enabled = true;
+        targetComponent.transform.eulerAngles = Vector3.zero;
     }
 
     public void flipDone()

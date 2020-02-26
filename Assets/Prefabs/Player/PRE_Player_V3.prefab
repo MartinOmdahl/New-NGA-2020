@@ -956,9 +956,8 @@ GameObject:
   - component: {fileID: 3657943181741500160}
   - component: {fileID: 5745704688662403783}
   - component: {fileID: 5050483661556951108}
-  - component: {fileID: 481367615641622971}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: ground ref cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1025,19 +1024,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &481367615641622971
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3211887640441881555}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3461761284756424006
 GameObject:
   m_ObjectHideFlags: 0
@@ -1372,11 +1358,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ANIM_WalkCycleTest
       objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: a06b02554793f434e9a92683bac1409b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4137360376990707587, guid: a06b02554793f434e9a92683bac1409b,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -1384,6 +1365,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 6c5676f466ead6b4da97f110e4ebfe76, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a06b02554793f434e9a92683bac1409b, type: 3}
+--- !u!4 &436407152330814979 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4127242360910136154, guid: a06b02554793f434e9a92683bac1409b,
+    type: 3}
+  m_PrefabInstance: {fileID: 4560040794607613273}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8805153272000798275 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: a06b02554793f434e9a92683bac1409b,
@@ -1393,12 +1380,6 @@ Transform:
 --- !u!1 &5506048460931935312 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: a06b02554793f434e9a92683bac1409b,
-    type: 3}
-  m_PrefabInstance: {fileID: 4560040794607613273}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &436407152330814979 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4127242360910136154, guid: a06b02554793f434e9a92683bac1409b,
     type: 3}
   m_PrefabInstance: {fileID: 4560040794607613273}
   m_PrefabAsset: {fileID: 0}
