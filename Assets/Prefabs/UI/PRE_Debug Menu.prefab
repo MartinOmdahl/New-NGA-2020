@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1023574394238317871}
   - component: {fileID: 1023574394238317870}
   m_Layer: 5
-  m_Name: Collected Stars Button
+  m_Name: Collected Nuts Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2629,7 +2629,7 @@ GameObject:
   - component: {fileID: 1023574395579669132}
   - component: {fileID: 1023574395579669131}
   m_Layer: 5
-  m_Name: Collected Coins Button
+  m_Name: Collected Seeds Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3497,7 +3497,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Collected coins:'
+  m_text: 'Collected seeds:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4292,7 +4292,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Collected stars:'
+  m_text: 'Collected nuts:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4361,7 +4361,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1023574396118401254}
-    characterCount: 16
+    characterCount: 15
     spriteCount: 0
     spaceCount: 1
     wordCount: 2
@@ -4495,7 +4495,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugMenuShortcut: 4e0100004f01000050010000
   closeMenuButton: 336
-  shortcutHoldTime: 1
+  shortcutHoldTime: 0.5
   playerPositionObject: {fileID: 4639931764764344005, guid: 3279871d8547c844eb296cdf05ca9c6a,
     type: 3}
   debugMenu: {fileID: 1023574396199866871}

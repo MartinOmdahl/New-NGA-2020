@@ -25,9 +25,10 @@ public class SCR_VarManager : MonoBehaviour
     public int currentHealth;
 
     [Header("Collectibles")]
-    public int currentCoins;
-    public int currentStars;
-    public List<int> CollectedStars = new List<int>();
+    public int currentSeeds;
+    // technically, we don't need this... could use CollectedGoldNuts.count instead
+    public int currentGoldNuts;
+    public List<int> CollectedGoldNuts = new List<int>();
 
     [Header("Gameplay")]
     public bool GamePaused = false;

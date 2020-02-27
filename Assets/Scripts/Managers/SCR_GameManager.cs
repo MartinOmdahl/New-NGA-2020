@@ -19,7 +19,6 @@ public class SCR_GameManager : MonoBehaviour
     SCR_VarManager varManager;
     SCR_ObjectReferenceManager objectRefs;
 
-
     private void Awake()
     {
         controls = new InputControls();
@@ -35,7 +34,6 @@ public class SCR_GameManager : MonoBehaviour
         controls.Menu.Disable();
     }
 
-
     void Update()
     {
         
@@ -45,12 +43,12 @@ public class SCR_GameManager : MonoBehaviour
     {
         print("pause check");
 
-        // If not in a cutscene or other menu
+        // If not [in a cutscene] or other menu
         if (varManager.GamePaused)
         {
             varManager.GamePaused = false;
 
-            // Remove pause hud
+            // Remove pause HUD
             objectRefs.pauseMenu.alpha = 0;
             objectRefs.pauseMenu.interactable = false;
             objectRefs.pauseMenu.blocksRaycasts = false;
@@ -86,5 +84,4 @@ public class SCR_GameManager : MonoBehaviour
     {
         controls.Player.Pause.performed += ctx => PauseCheck();
     }
-
 }

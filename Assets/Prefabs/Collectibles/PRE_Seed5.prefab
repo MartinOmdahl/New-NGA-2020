@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3795857101547909551}
   - component: {fileID: 3795857101547909549}
   m_Layer: 0
-  m_Name: PRE_Coin5
+  m_Name: PRE_Seed5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetType: 1
+  isBeingAttacked: 0
   canSwingFromGround: 1
   isBeingSwung: 0
   HasReward: 1
@@ -71,7 +72,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50949f33e08ed6845826aeca6bc74dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinValue: 5
+  seedValue: 5
 --- !u!135 &3795857101547909551
 SphereCollider:
   m_ObjectHideFlags: 0

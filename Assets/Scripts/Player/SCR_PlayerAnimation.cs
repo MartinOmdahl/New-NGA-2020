@@ -44,17 +44,16 @@ public class SCR_PlayerAnimation : MonoBehaviour
     {
         if (tongue.currentTarget != null)
         {
-            Quaternion angleToTarget = Quaternion.LookRotation((tongue.currentTarget.transform.position - transform.position).normalized, Vector3.up);
+            // Get direction between player and target (ignoring height difference)
+            Vector3 targetDirection = (tongue.currentTarget.transform.position - new Vector3(transform.position.x, tongue.currentTarget.transform.position.y, transform.position.z)).normalized;
 
-            float f_AngleBetween = Vector3.Angle(transform.forward, (tongue.currentTarget.transform.position - transform.position).normalized);
+            // Get angle of target direction relative to player's rotation
+            float angleToTarget = Vector3.Angle(transform.forward, targetDirection);
 
-            //print(f_AngleBetween);
-
-            if (f_AngleBetween > 50)
+            if (angleToTarget > 30)
             {
-                print(transform.InverseTransformDirection(tongue.currentTarget.transform.position - transform.position).normalized.x);
-
-                if (transform.InverseTransformDirection(tongue.currentTarget.transform.position - transform.position).normalized.x > 0)
+                // Check if object is to the left or right of player
+                if (transform.InverseTransformDirection(targetDirection).x > 0)
                 {
                     eyesRenderer.material.mainTexture = eyesRight;
                 }
@@ -67,7 +66,6 @@ public class SCR_PlayerAnimation : MonoBehaviour
             {
                 eyesRenderer.material.mainTexture = eyesForward;
             }
-
         }
         else if (eyesRenderer.material.mainTexture != eyesForward)
         {

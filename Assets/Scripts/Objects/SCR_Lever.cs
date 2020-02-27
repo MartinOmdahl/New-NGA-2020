@@ -6,6 +6,8 @@ public class SCR_Lever : MonoBehaviour
 {
     public enum LeverType { Timer, TwoWay, SingleUse}
     public LeverType leverType = LeverType.Timer;
+    [Tooltip("Seconds lever waits before flipping back.\n" +
+        "Only used if Lever Type is \"Timer\".")]
     public float timerDuration;
     public Transform stickTransform;
 
@@ -21,11 +23,12 @@ public class SCR_Lever : MonoBehaviour
         anim = GetComponent<Animator>();
 
         targetComponent.transform.eulerAngles = Vector3.zero;
+        activated = false;
     }
 
     void Update()
     {
-        if (targetComponent != null 
+        if (targetComponent != null
             && targetComponent.eventTriggered)
         {
             switch (leverType)
@@ -45,16 +48,17 @@ public class SCR_Lever : MonoBehaviour
 
     IEnumerator SingleUseActivate()
     {
-        // Destroy tongue target
+        // Disable tongue target
         SCR_ObjectReferenceManager.Instance.player.GetComponent<SCR_Tongue>().TerminateGrab();
         targetComponent.eventTriggered = false;
         targetComponent.enabled = false;
-
 
         // Play flip animation
         anim.SetTrigger("FlipA");
         animationPlaying = true;
         yield return new WaitUntil(()=> animationPlaying == false);
+
+        activated = true;
 
         // Break stick by activating rigidbody
         Rigidbody stickRb = stickTransform.GetComponent<Rigidbody>();
@@ -65,8 +69,6 @@ public class SCR_Lever : MonoBehaviour
         // Despawn stick
         yield return new WaitForSeconds(3);
         Destroy(stickTransform.gameObject);
-
-        activated = true;
     }
 
     IEnumerator TimerActivate()
@@ -115,8 +117,9 @@ public class SCR_Lever : MonoBehaviour
         // Disable tongue target
         SCR_ObjectReferenceManager.Instance.player.GetComponent<SCR_Tongue>().TerminateGrab();
         targetComponent.eventTriggered = false;
-        targetComponent.enabled = false;
+        targetComponent.targetType = SCR_TongueTarget.TargetType.Deflect;
 
+        // Check which way lever should flip
         if (activated)
         {
             // Play flip animation B
@@ -138,12 +141,14 @@ public class SCR_Lever : MonoBehaviour
         }
 
         // Enable tongue target
-        targetComponent.enabled = true;
+        targetComponent.targetType = SCR_TongueTarget.TargetType.Grab;
         targetComponent.transform.eulerAngles = Vector3.zero;
     }
 
     public void flipDone()
     {
+        // Function called by animation trigger
+
         animationPlaying = false;
     }
 }

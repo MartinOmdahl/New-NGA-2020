@@ -24,7 +24,6 @@ public class SCR_Tongue : MonoBehaviour
     SCR_PlayerV3 movement;
     SCR_VarManager varManager;
     SCR_ObjectReferenceManager objectRefs;
-    SCR_TargetingIcon targetIcon;
     Rigidbody rb;
     #endregion
 
@@ -77,9 +76,6 @@ public class SCR_Tongue : MonoBehaviour
             StartCoroutine(TongueAttack(currentTarget));
             tongueState = TongueState.Attacking;
         }
-
-        // Set target icon's target
-        objectRefs.targetIcon.target = currentTarget;
     }
 
     #region Targeting
@@ -375,7 +371,7 @@ public class SCR_Tongue : MonoBehaviour
             switch (target.rewardType)
             {
                 case SCR_TongueTarget.RewardType.Coin:
-                    varManager.currentCoins += target.rewardCount;
+                    varManager.currentSeeds += target.rewardCount;
                     // [Play coin sound]
                     break;
                 case SCR_TongueTarget.RewardType.TempReward2:

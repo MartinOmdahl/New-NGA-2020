@@ -9,7 +9,6 @@ public class SCR_PlayerSystem : MonoBehaviour
     SCR_ObjectReferenceManager objectRefs;
     SCR_VarManager varManager;
 
-
     void Start()
     {
         varManager = SCR_VarManager.Instance;
@@ -36,9 +35,8 @@ public class SCR_PlayerSystem : MonoBehaviour
         // Disable player behavior
         // Play animation
 
-        // Bring up menu to reset game
+        // Bring up menu to reset game, and freeze time
 
         print("YOU DIED");
     }
-
 }

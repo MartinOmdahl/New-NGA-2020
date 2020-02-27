@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SCR_CollectibleSmall : MonoBehaviour
 {
-    [Tooltip("How many coins will player get from this object?")]
-    public int coinValue = 1;
-    
+    [Tooltip("How many seeds will player get from this object?")]
+    public int seedValue = 1;
+
     bool useTrigger = true;
 
     SCR_TongueTarget targetComponent;
@@ -18,10 +18,9 @@ public class SCR_CollectibleSmall : MonoBehaviour
         varManager = SCR_VarManager.Instance;
     }
 
-
     void Update()
     {
-        // Disable trigger when player eats coin, so it won't be collected twice
+        // Disable trigger when player starts eating coin, so it won't be collected twice
         if (targetComponent.isBeingAttacked)
         {
             useTrigger = false;
@@ -30,7 +29,7 @@ public class SCR_CollectibleSmall : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && useTrigger)
+        if (useTrigger && other.CompareTag("Player"))
         {
             GetCollected();
             useTrigger = false;
@@ -39,7 +38,7 @@ public class SCR_CollectibleSmall : MonoBehaviour
 
     void GetCollected()
     {
-        varManager.currentCoins += coinValue;
+        varManager.currentSeeds += seedValue;
         // [Play effect]
         Destroy(gameObject);
     }

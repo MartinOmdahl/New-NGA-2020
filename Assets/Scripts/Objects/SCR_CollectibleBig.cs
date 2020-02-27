@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SCR_CollectibleBig : MonoBehaviour
 {
-    [Tooltip("What's this Star's unique ID?")]
+    [Tooltip("This Gold Nut's unique ID")]
     public int starIndex;
     public GameObject normalMesh, collectedMesh;
 
@@ -19,8 +19,8 @@ public class SCR_CollectibleBig : MonoBehaviour
         targetComponent = GetComponent<SCR_TongueTarget>();
         varManager = SCR_VarManager.Instance;
 
-        // Check if this star has been collected before
-        foreach(var collIndex in varManager.CollectedStars)
+        // Check if this Gold Nut has been collected before
+        foreach(var collIndex in varManager.CollectedGoldNuts)
         {
             if(collIndex == starIndex)
             {
@@ -41,14 +41,9 @@ public class SCR_CollectibleBig : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-
-    }
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && useTrigger)
+        if (useTrigger && other.CompareTag("Player"))
         {
             StartCoroutine(GetCollected());
             useTrigger = false;
@@ -59,8 +54,8 @@ public class SCR_CollectibleBig : MonoBehaviour
     {
         if (!alreadyCollected)
         {
-            varManager.currentStars ++;
-            varManager.CollectedStars.Add(starIndex);
+            varManager.currentGoldNuts ++;
+            varManager.CollectedGoldNuts.Add(starIndex);
         }
 
         // [Play effect]

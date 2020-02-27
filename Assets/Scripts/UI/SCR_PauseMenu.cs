@@ -13,6 +13,4 @@ public class SCR_PauseMenu : MonoBehaviour
     {
 
     }
-
- 
 }

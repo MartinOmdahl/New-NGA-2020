@@ -15,7 +15,7 @@ public class SCR_CollectiblesHUD : MonoBehaviour
 
     void Update()
     {
-        nutsText.SetText(varManager.currentStars.ToString());
-        seedsText.SetText(varManager.currentCoins.ToString());
+        nutsText.SetText(varManager.currentGoldNuts.ToString());
+        seedsText.SetText(varManager.currentSeeds.ToString());
     }
 }
