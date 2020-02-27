@@ -22,7 +22,7 @@ public class SCR_CollectibleSmall : MonoBehaviour
     void Update()
     {
         // Disable trigger when player eats coin, so it won't be collected twice
-        if (targetComponent.isBeingEaten)
+        if (targetComponent.isBeingAttacked)
         {
             useTrigger = false;
         }

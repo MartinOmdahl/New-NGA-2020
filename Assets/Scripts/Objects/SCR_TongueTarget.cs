@@ -15,6 +15,9 @@ public class SCR_TongueTarget : MonoBehaviour
     public enum TargetType { Swing, Eat, Grab, Deflect}
     public TargetType targetType = TargetType.Swing;
 
+    // General variables
+    public bool isBeingAttacked;
+
     // Swing variables
     [Tooltip("Whether player can start swing while grounded")]
     public bool canSwingFromGround = true;

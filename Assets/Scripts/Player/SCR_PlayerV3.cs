@@ -145,8 +145,6 @@ public class SCR_PlayerV3 : MonoBehaviour
         // Set fall speed to zero
         externalVelocity.velocity = Vector3.zero;
 
-        print("normal movement used at " + Time.time);
-
         // Should be updated to move along ground normal
         // Player mesh should also be rotated to fit ground normal.
 

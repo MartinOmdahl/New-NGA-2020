@@ -23,26 +23,29 @@ public class SCR_TargetingIcon : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.LookAt(objectRefs.playerCamera.transform, Vector3.up);
-
-        if(target != null)
-        {
-            Targeting();
-        }
-        else
-        {
-            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, 0.7f);
-
-            if (transform.localScale.x < 0.01f)
-            {
-                transform.localScale = Vector3.zero;
-                targetHasBeenNull = true;
-            }
-        }
-
         // Destroy self if player stops existing
         if (objectRefs.player == null)
             Destroy(gameObject);
+        else
+        {
+            transform.LookAt(objectRefs.playerCamera.transform, Vector3.up);
+
+            if (target != null)
+            {
+                Targeting();
+            }
+            else
+            {
+                transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, 0.7f);
+
+                if (transform.localScale.x < 0.01f)
+                {
+                    transform.localScale = Vector3.zero;
+                    targetHasBeenNull = true;
+                }
+            }
+        }
+
     }
 
     void Targeting()
