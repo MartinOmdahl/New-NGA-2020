@@ -11,10 +11,10 @@ public class SCR_TongueStretchProto : MonoBehaviour
     void Start()
     {
         tongueParent = transform.parent;
-        transform.SetParent(null);
+        //transform.SetParent(null);
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         if (SCR_ObjectReferenceManager.Instance.player == null)
         {
@@ -22,7 +22,7 @@ public class SCR_TongueStretchProto : MonoBehaviour
         }
         else
         {
-            transform.position = tongueParent.position;
+            //transform.position = tongueParent.position;
             transform.LookAt(tongueCollider.position, Vector3.up);
             transform.localScale = new Vector3(1, 1, Vector3.Distance(transform.position, tongueCollider.position));
         }

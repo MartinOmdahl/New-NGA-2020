@@ -22,6 +22,8 @@ public class SCR_Variables : ScriptableObject
     public float airJumpCooldown = 0.5f;
 	[Range(0,1)]
 	public float airControlPercent = .5f;
+    [Tooltip("Highest possible velocity during normal movement")]
+    public float terminalVelocity = 20;
 
     [Tooltip("Max walkable ground angle.\n" +
         "0 is level ground, 90 is a wall")]

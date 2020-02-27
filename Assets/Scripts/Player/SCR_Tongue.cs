@@ -286,7 +286,7 @@ public class SCR_Tongue : MonoBehaviour
         rb.constraints &= ~RigidbodyConstraints.FreezeRotationZ;
 
         float swingTime = 0;
-        while (holdingTongueButton || swingTime < 0.65f)
+        while (holdingTongueButton || swingTime < 0.2f)
         {
             yield return null;
             swingTime += Time.deltaTime;
@@ -306,7 +306,12 @@ public class SCR_Tongue : MonoBehaviour
         target.isBeingSwung = false;
 
         // Set velocity on swing end. Change this in future to convert linear velocity to angular
-        rb.velocity = rb.velocity.normalized * targetJointRb.angularVelocity.magnitude * 2;
+        //rb.velocity = rb.velocity.normalized * targetJointRb.angularVelocity.magnitude * 2;
+        movement.externalVelocity.velocity = rb.velocity.normalized * targetJointRb.angularVelocity.magnitude * 2.5f;
+        if(movement.externalVelocity.velocity.y < 1)
+        {
+            movement.externalVelocity.velocity = new Vector3(movement.externalVelocity.velocity.x, 1, movement.externalVelocity.velocity.z);
+        }
 
         // Re-activate normal movement
         movement.overrideNormalMovement = false;
