@@ -13,10 +13,12 @@ public class SCR_TargetingIcon : MonoBehaviour
     void Start()
     {
         objectRefs = SCR_ObjectReferenceManager.Instance;
-        playerTongue = objectRefs.player.GetComponent<SCR_Tongue>();
         objectRefs.targetIcon = this;
 
         transform.SetParent(null);
+
+        // Make icon start invisible
+        transform.localScale = Vector3.zero;
     }
 
     void FixedUpdate()
@@ -26,6 +28,9 @@ public class SCR_TargetingIcon : MonoBehaviour
             Destroy(gameObject);
         else
         {
+            if(playerTongue == null)
+                playerTongue = objectRefs.player.GetComponent<SCR_Tongue>();
+
             // Rotate icon to always face camera
             transform.LookAt(objectRefs.playerCamera.transform, Vector3.up);
 
@@ -49,13 +54,13 @@ public class SCR_TargetingIcon : MonoBehaviour
         Vector3 targetPos = target.transform.position;
         if (targetHasBeenNull)
         {
-            // If NOT going directly from the previous target, set position instantly
+            // If NOT moving directly from the previous target, set position instantly
             transform.position = targetPos;
             targetHasBeenNull = false;
         }
         else
         {
-            // If going directly from one target to another, set position with a lerp
+            // If moving directly from the previous target, set position with a lerp
             transform.position = Vector3.Lerp(transform.position, targetPos, 0.7f);
         }
     }
@@ -65,6 +70,7 @@ public class SCR_TargetingIcon : MonoBehaviour
         // Shrink icon
         transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, 0.7f);
 
+        // If scale is close to zero, set scale to zero
         if (transform.localScale.x < 0.01f)
         {
             transform.localScale = Vector3.zero;
