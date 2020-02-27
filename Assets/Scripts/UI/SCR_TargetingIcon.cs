@@ -16,11 +16,15 @@ public class SCR_TargetingIcon : MonoBehaviour
     {
         objectRefs = SCR_ObjectReferenceManager.Instance;
         objectRefs.targetIcon = this;
-        cGroup = GetComponent<CanvasGroup>(); 
+        cGroup = GetComponent<CanvasGroup>();
+
+        transform.SetParent(null);
     }
 
     void FixedUpdate()
     {
+        transform.LookAt(objectRefs.playerCamera.transform, Vector3.up);
+
         if(target != null)
         {
             Targeting();
@@ -35,22 +39,25 @@ public class SCR_TargetingIcon : MonoBehaviour
                 targetHasBeenNull = true;
             }
         }
+
+        // Destroy self if player stops existing
+        if (objectRefs.player == null)
+            Destroy(gameObject);
     }
 
     void Targeting()
     {
-        float maxDistance = objectRefs.variables.distanceFromTarget + objectRefs.variables.maxTargetDistance;
+        //float maxDistance = objectRefs.variables.distanceFromTarget + objectRefs.variables.maxTargetDistance;
 
-        targetScale = 1.8f -
-            Vector3.Distance(objectRefs.playerCamera.transform.position, target.transform.position) / (maxDistance -2);
+        //targetScale = 1.8f -
+        //    Vector3.Distance(objectRefs.playerCamera.transform.position, target.transform.position) / (maxDistance -2);
 
-        print("targetscale: " + targetScale);
-
-
-        transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(targetScale, targetScale, targetScale), 0.7f);
+        //print("targetscale: " + targetScale);
 
 
-        Vector3 targetPos = objectRefs.playerCamera.WorldToScreenPoint(target.transform.position);
+        transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one, 0.7f);
+
+        Vector3 targetPos = target.transform.position;
         if (targetHasBeenNull)
         {
             transform.position = targetPos;

@@ -298,6 +298,7 @@ public class SCR_PlayerV3 : MonoBehaviour
         if (collision.gameObject.CompareTag("Platform"))
         {
             transform.SetParent(collision.transform);
+            
         }
 
         // Keep track of number of colliding bodies
@@ -310,6 +311,7 @@ public class SCR_PlayerV3 : MonoBehaviour
         if (collision.gameObject.CompareTag("Platform"))
         {
             transform.SetParent(null);
+            transform.localScale = Vector3.one;
         }
 
         // Keep track of number of colliding bodies
