@@ -29,12 +29,12 @@ public class SCR_Tongue : MonoBehaviour
 
     #region Public variables
     public SCR_TongueTarget currentTarget;
+    public bool lockedOnTarget;
     #endregion
 
     #region Local variables
     enum TongueState { Retracted, Attacking, Attached, Retracting }
     TongueState tongueState = TongueState.Retracted;
-    bool lockedOnTarget;
     bool holdingTongueButton;
     bool grabbedOnTarget;
     bool grabTerminated;

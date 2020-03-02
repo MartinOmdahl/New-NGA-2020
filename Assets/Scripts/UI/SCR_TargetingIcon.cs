@@ -4,21 +4,27 @@ using UnityEngine;
 
 public class SCR_TargetingIcon : MonoBehaviour
 {
+    public Transform lockIcon;
+
     SCR_ObjectReferenceManager objectRefs;
     SCR_Tongue playerTongue;
     SCR_TongueTarget target;
+    SpriteRenderer lockIconSprite;
 
     bool targetHasBeenNull = true;
+    float iconAngleOffset;
 
     void Start()
     {
         objectRefs = SCR_ObjectReferenceManager.Instance;
         objectRefs.targetIcon = this;
+        lockIconSprite = lockIcon.GetComponent<SpriteRenderer>();
 
         transform.SetParent(null);
 
         // Make icon start invisible
         transform.localScale = Vector3.zero;
+        lockIcon.localScale = Vector3.zero;
     }
 
     void FixedUpdate()
@@ -32,7 +38,8 @@ public class SCR_TargetingIcon : MonoBehaviour
                 playerTongue = objectRefs.player.GetComponent<SCR_Tongue>();
 
             // Rotate icon to always face camera
-            transform.LookAt(objectRefs.playerCamera.transform, Vector3.up);
+            transform.LookAt(objectRefs.playerCamera.transform, objectRefs.playerCamera.transform.up);
+
 
             target = playerTongue.currentTarget;
             if (target != null)
@@ -43,6 +50,22 @@ public class SCR_TargetingIcon : MonoBehaviour
             {
                 NotTargeting();
             }
+
+            // Rotate icon 45 degrees if locked on target
+            Color lockSpriteColor;
+            if (playerTongue.lockedOnTarget && target != null)
+            {
+                iconAngleOffset = Mathf.Lerp(iconAngleOffset, -45, 0.6f);
+                lockIcon.localScale = Vector3.Lerp(lockIcon.localScale, Vector3.one, 0.6f);
+                lockIconSprite.color = new Color(lockIconSprite.color.r, lockIconSprite.color.g, lockIconSprite.color.b, 1);
+            }
+            else
+            {
+                iconAngleOffset = Mathf.Lerp(iconAngleOffset, 0, 0.6f);
+                lockIcon.localScale = Vector3.Lerp(lockIcon.localScale, new Vector3(1.5f, 1.5f, 1.5f), 0.6f);
+                lockIconSprite.color = new Color(lockIconSprite.color.r, lockIconSprite.color.g, lockIconSprite.color.b, 0);
+            }
+            transform.localEulerAngles += new Vector3(0, 0, iconAngleOffset);
         }
     }
 
