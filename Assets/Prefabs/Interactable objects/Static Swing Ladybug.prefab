@@ -222,6 +222,7 @@ MonoBehaviour:
   targetType: 0
   isBeingAttacked: 0
   canSwingFromGround: 1
+  startWithVelocity: 1
   isBeingSwung: 0
   HasReward: 0
   rewardType: 0

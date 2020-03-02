@@ -22,6 +22,7 @@ public class SCR_Tongue : MonoBehaviour
     public Transform tongueCollider;
     InputControls controls;
     SCR_PlayerV3 movement;
+    SCR_PlayerAnimation animScript;
     SCR_VarManager varManager;
     SCR_ObjectReferenceManager objectRefs;
     Rigidbody rb;
@@ -45,6 +46,7 @@ public class SCR_Tongue : MonoBehaviour
         controls = new InputControls();
         rb = GetComponent<Rigidbody>();
         movement = GetComponent<SCR_PlayerV3>();
+        animScript = GetComponentInChildren<SCR_PlayerAnimation>();
 
         tongueState = TongueState.Retracted;
 
@@ -169,6 +171,9 @@ public class SCR_Tongue : MonoBehaviour
         // Tell target it's being attacked
         target.isBeingAttacked = true;
 
+        // Tell animation that tongue is being extended
+        animScript.tongueOut = true;
+
         float TongueDistance = 0;
         while (TongueDistance < 1 && target != null)
         {
@@ -222,6 +227,9 @@ public class SCR_Tongue : MonoBehaviour
     IEnumerator TongueRetract(Vector3 targetPos, float startingDistance)
     {
         tongueState = TongueState.Retracting;
+
+        // Tell animation that tongue is retracted
+        animScript.tongueOut = false;
 
         float TongueDistance = startingDistance;
         while (TongueDistance > 0)
@@ -293,7 +301,7 @@ public class SCR_Tongue : MonoBehaviour
             swingTime += Time.deltaTime;
 
             // Add some forward rotation at the beginning of swing
-            if (swingTime < 0.1f)
+            if (target.startWithVelocity && swingTime < 0.1f)
             {
                 targetJointRb.AddRelativeTorque(-400 * Time.deltaTime, 0, 0, ForceMode.Impulse);
             }
@@ -462,14 +470,28 @@ public class SCR_Tongue : MonoBehaviour
             target.isBeingPulled = false;
         }
 
-        // Enable normal movement
-        movement.overrideRotation = false;
-        movement.overrideJump = false;
-
-        grabTerminated = false;
         grabbedOnTarget = false;
 
+        // Start retracting tongue
         StartCoroutine(TongueRetract(tongueCollider.transform.position, 1));
+
+        // If player was forced to release grab:
+        if (grabTerminated)
+        {
+            // Jerk player backwards
+            rb.AddRelativeForce(0, 0, -6, ForceMode.Impulse);
+            movement.overrideNormalMovement = true;
+            
+            // Delay enabling normal movement
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // Enable normal movement
+        movement.overrideJump = false;
+        movement.overrideRotation = false;
+        movement.overrideNormalMovement = false;
+
+        grabTerminated = false;
     }
 
     public void TerminateGrab()

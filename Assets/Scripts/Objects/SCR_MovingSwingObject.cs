@@ -21,12 +21,10 @@ public class SCR_MovingSwingObject : MonoBehaviour
     float waitTimer;
 
     SCR_TongueTarget targetComponent;
-    SphereCollider coll;
 
     void Awake()
     {
         targetComponent = GetComponent<SCR_TongueTarget>();
-        coll = GetComponent<SphereCollider>();
 
 
         randomAnimationOffset = Random.Range(-4, 4);
@@ -42,7 +40,6 @@ public class SCR_MovingSwingObject : MonoBehaviour
         if (targetComponent.isBeingSwung)
         {
             movingBackSpeed = 0;
-            coll.enabled = true;
 
             if (currentPositionAnchor == moveDestination)
                 FloatInPlace();
@@ -52,7 +49,6 @@ public class SCR_MovingSwingObject : MonoBehaviour
         else
         {
             movingForwardSpeed = 0;
-            coll.enabled = false;
 
             if (currentPositionAnchor == startingPosition)
                 FloatInPlace();
@@ -106,7 +102,6 @@ public class SCR_MovingSwingObject : MonoBehaviour
             gizmoPos = moveDestination;
         else
             gizmoPos = transform.position + moveDestination;
-
 
 
         Gizmos.DrawLine(transform.position, gizmoPos);

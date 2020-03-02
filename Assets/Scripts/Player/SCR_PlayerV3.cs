@@ -27,9 +27,11 @@ public class SCR_PlayerV3 : MonoBehaviour
     #region References
     public SCR_Variables variables;
     public Rigidbody externalVelocity;
+    public PhysicMaterial noFrictionMat, highFrictionMat;
     InputControls controls;
     Rigidbody rb;
 	Transform camT;
+    CapsuleCollider movementColl;
     #endregion
 
     #region Public variables
@@ -71,6 +73,7 @@ public class SCR_PlayerV3 : MonoBehaviour
 		camT = GameObject.FindGameObjectWithTag("PlayerCam").transform;
 		controls = new InputControls();
 		rb = GetComponent<Rigidbody>();
+        movementColl = GetComponent<CapsuleCollider>();
 
 		//Functions:
 		InputActions();
@@ -193,6 +196,8 @@ public class SCR_PlayerV3 : MonoBehaviour
 
         moveDirection = transform.eulerAngles;
 
+        // Give player high friction physic material
+        movementColl.material = highFrictionMat;
     }
 
     void ManageExternalVelocity()
@@ -206,13 +211,8 @@ public class SCR_PlayerV3 : MonoBehaviour
         // Keep external velocity object at world origin
         externalVelocity.transform.position = Vector3.zero;
 
-
-
-
         // Visualize external velocity
         Debug.DrawLine(transform.position, transform.position + externalVelocity.velocity * 1);
-
-
     }
 
     #endregion
@@ -281,7 +281,14 @@ public class SCR_PlayerV3 : MonoBehaviour
 
     void GroundDetect()
     {
-        // Keep track of how many frames player has been in air;
+        // This bit only runs if player has been in the air for > 1 frame
+        if(offGroundFrames > 0)
+        {
+            // Give player frictionless physic material in air
+            movementColl.material = noFrictionMat;
+        }
+
+        // Keep track of how many frames player has been in air
         if (!touchingGround)
             offGroundFrames++;
 
