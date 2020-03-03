@@ -35,10 +35,10 @@ public class SCR_PlayerAnimation : MonoBehaviour
     void Update()
     {
         // Set animator bools
-        anim.SetBool("Walking", controls.Player.Movement.ReadValue<Vector2>().magnitude > 0.05f);
-        print("Touching ground: " + movement.touchingGround + ", Walking: " + (controls.Player.Movement.ReadValue<Vector2>().magnitude > 0.05f) + ", Tongue out: " + tongueOut);
+        anim.SetBool("Walking", controls.Player.Movement.ReadValue<Vector2>().magnitude > 0.1f);
         anim.SetBool("TouchingGround", movement.touchingGround);
         anim.SetBool("TongueOut", tongueOut);
+        //print("Touching ground: " + movement.touchingGround + ", Walking: " + (controls.Player.Movement.ReadValue<Vector2>().magnitude > 0.05f) + ", Tongue out: " + tongueOut);
 
         // Set animator values
         anim.SetFloat("WalkSpeed", 1.4f * controls.Player.Movement.ReadValue<Vector2>().magnitude);

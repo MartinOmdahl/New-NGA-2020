@@ -33,14 +33,14 @@ public class SCR_CamControlV2 : MonoBehaviour
     private void LateUpdate()
     {
         Vector2 input = controls.Player.Camera.ReadValue<Vector2>();
-        yaw += input.x * variables.sensitivity;
-        pitch -= input.y * variables.sensitivity;
-        pitch = Mathf.Clamp(pitch, variables.pitchMinMax.x, variables.pitchMinMax.y);
+        yaw += input.x * variables.camSensitivity;
+        pitch -= input.y * variables.camSensitivity;
+        pitch = Mathf.Clamp(pitch, variables.camPitchMinMax.x, variables.camPitchMinMax.y);
 
         currentRotation = Vector3.SmoothDamp(currentRotation, new Vector3(pitch, yaw), ref smoothVelocity, variables.camTurnSpeed);
         transform.eulerAngles = currentRotation;
 
-        transform.position = lookTarget.position - transform.forward * variables.distanceFromTarget;
+        transform.position = lookTarget.position - transform.forward * variables.camDistanceMinMax.y;
     }
 
 }

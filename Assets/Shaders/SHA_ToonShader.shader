@@ -1,4 +1,4 @@
-﻿Shader "Custom/SHA_Toon1"
+﻿Shader "Custom/SHA_Toon"
 {
 Properties {
         [Header(Base Parameters)]

@@ -166,6 +166,8 @@ public class SCR_Tongue : MonoBehaviour
      * Tongue Attack
      * Tongue Retract
      */
+
+
     IEnumerator TongueAttack(SCR_TongueTarget target)
     {
         // Tell target it's being attacked
@@ -521,58 +523,6 @@ public class SCR_Tongue : MonoBehaviour
 
         controls.Player.TongueButtonPress.performed += ctx => holdingTongueButton = true;
         controls.Player.TongueButtonRelease.performed += ctx => holdingTongueButton = false;
-    }
-    #endregion
-
-    #region Gizmos
-    float targetSphereSize = 0;
-    Vector3 targetIconPosition;
-    private void OnDrawGizmos()
-    {
-        #region Highlight Target gizmos
-        Gizmos.color = Color.red;
-
-        // Set color of targeting icon to indicate target locking
-        Color targetingColor;
-        if (lockedOnTarget)
-            targetingColor = new Color(1, .6f, .6f);
-        else
-            targetingColor = new Color(1, 0, 0);
-
-        if (currentTarget != null)
-        {
-            // Show target icon and wire sphere on current target
-            targetIconPosition = Vector3.Lerp(targetIconPosition, currentTarget.transform.position, 20 * Time.deltaTime);
-            targetSphereSize = Mathf.MoveTowards(targetSphereSize, 0.5f, 4 * Time.deltaTime);
-            Gizmos.DrawIcon(targetIconPosition + currentTarget.transform.TransformDirection(currentTarget.targetIconOffset), "SPR_TargetTriangle128.png", false, targetingColor);
-        }
-        else
-        {
-            // If there is no target, shrink wire sphere to oblivion
-            targetSphereSize = Mathf.MoveTowards(targetSphereSize, 0.0f, 4 * Time.deltaTime);
-        }
-        Gizmos.DrawWireSphere(targetIconPosition, targetSphereSize);
-        #endregion
-
-        #region Show Target Range gizmos
-        Gizmos.color = Color.blue;
-
-        // you know what, fuck this whole part
-
-        //if (Application.isPlaying)
-        //{
-        //    DrawRelativeDirLine(new Vector3(0, variables.maxTargetAngle, 0), tongueParent);
-        //    DrawRelativeDirLine(new Vector3(0, -variables.maxTargetAngle, 0), tongueParent);
-        //    DrawRelativeDirLine(new Vector3(variables.maxTargetAngle, 0, 0), tongueParent);
-        //    DrawRelativeDirLine(new Vector3(-variables.maxTargetAngle, 0, 0), tongueParent);
-
-        //    void DrawRelativeDirLine(Vector3 angle, Transform lineParent)
-        //    {
-        //        Gizmos.DrawLine(lineParent.position, lineParent.position + ((Quaternion.Euler(angle) * lineParent.forward).normalized * variables.maxTargetDistance));
-        //    }
-        //}
-
-        #endregion
     }
     #endregion
 }

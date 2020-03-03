@@ -50,7 +50,6 @@ public class SCR_PlayerV3 : MonoBehaviour
 	float moveRotationVelocity, moveSpeedVelocity;
 	float rotationVelocity, speedVelocity;
 	float targetRotation;
-    int collisionCount;
     int offGroundFrames;
     float jumpCooldown;
     Vector3 groundNormal;
@@ -87,6 +86,11 @@ public class SCR_PlayerV3 : MonoBehaviour
 	{
         //Functions
 
+        if (!overrideRotation)
+        {
+            NormalRotation();
+        }
+
         if (!overrideNormalMovement)
         {
             if (touchingGround)
@@ -99,17 +103,15 @@ public class SCR_PlayerV3 : MonoBehaviour
             }
         }
 
-        if (!overrideRotation)
-        {
-            NormalRotation();
-        }
-
         GroundDetect();
         ManageExternalVelocity();
     }
 
     #region Horizontal movement
 
+    /// <summary>
+    /// Horizontal movement while touching ground
+    /// </summary>
     void GroundMovement()
     {
         /* OK, so this is gonna need some explanation
@@ -118,18 +120,20 @@ public class SCR_PlayerV3 : MonoBehaviour
          * by setting a rotation and then moving player along the forward vector of that rotation. 
          */
 
-        //Get Player Input:
+        // Get player directional input:
         Vector2 input = controls.Player.Movement.ReadValue<Vector2>();
 
         // Find rotation of direction player should move in (it's weird, but truuuuuuuuust me)
         float targetMoveRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
 
         float targetSpeed;
-        //If Input then set Target Rotation &Smoothly Rotate in Degrees:
+        // If Input then set Target Rotation &Smoothly Rotate in Degrees:
         if (input.magnitude > 0.1f)
         {
-        //moveDirection = Vector3.up * Mathf.SmoothDampAngle(moveDirection.y, targetMoveRotation, ref moveRotationVelocity, variables.playerTurnSpeed);
-        moveDirection = Vector3.up * targetMoveRotation;
+            // moveDirection = Vector3.up * Mathf.SmoothDampAngle(moveDirection.y, targetMoveRotation, ref moveRotationVelocity, variables.playerTurnSpeed);
+
+            // Align move direction to ground normal
+            moveDirection = Vector3.up * targetMoveRotation;
 
             //targetSpeed = (running ? variables.runSpeed : variables.walkSpeed) * input.magnitude;
             targetSpeed = variables.walkSpeed * input.magnitude;
@@ -137,6 +141,8 @@ public class SCR_PlayerV3 : MonoBehaviour
         else
         {
             targetSpeed = 0;
+
+            rb.velocity = Vector3.zero;
         }
 
         //Check if Running & Set Speed Accordingly:
@@ -151,13 +157,14 @@ public class SCR_PlayerV3 : MonoBehaviour
 
         // Should be updated to move along ground normal
         // Player mesh should also be rotated to fit ground normal.
-
-        // Currently missing: Set move rotation in air as well
     }
 
+    /// <summary>
+    /// Horizontal movement while not touching ground
+    /// </summary>
     void AirMovement()
     {
-        //Get Player Input:
+        //Get player directional input:
         Vector2 input = controls.Player.Movement.ReadValue<Vector2>();
 
         // Find rotation of direction player should move in (it's weird, but truuuuuuuuust me)
@@ -187,20 +194,20 @@ public class SCR_PlayerV3 : MonoBehaviour
         // Sum external and internal forces to determine velocity
         rb.velocity = new Vector3(internalVelocity.x, 0, internalVelocity.z) + externalVelocity.velocity;
 
-
         externalVelocity.velocity = Vector3.Lerp(externalVelocity.velocity, new Vector3(0, externalVelocity.velocity.y, 0), 0.05f);
     }
 
+    /// <summary>
+    /// This function runs when player lands on ground after being in the air.
+    /// </summary>
     void OnLanding()
     {
-        // This function runs when player lands on ground after being in the air.
-
         moveDirection = transform.eulerAngles;
 
         // Give player high friction physic material
         movementColl.material = highFrictionMat;
     }
-
+    
     void ManageExternalVelocity()
     {
         // Clamp external velocity below terminal velocity
@@ -220,9 +227,12 @@ public class SCR_PlayerV3 : MonoBehaviour
 
     #region Jumping
 
+    /// <summary>
+    /// This function runs on jump input.
+    /// It checks what kind of jump should be performed, if any.
+    /// </summary>
     void JumpCheck()
     {
-        // Check what kind of jump should be performed, if any
         if (touchingGround && !overrideJump)
         {
             StartCoroutine(GroundJump());
@@ -236,18 +246,26 @@ public class SCR_PlayerV3 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Normal jump (from ground)
+    /// </summary>
+    /// <returns></returns>
     IEnumerator GroundJump()
     {
-        yield return null;
-
         // Change everything about this later, please
         externalVelocity.velocity = new Vector3(rb.velocity.x * variables.airControlPercent, 11, rb.velocity.z * variables.airControlPercent);
 
         touchingGround = false;
 
         Debug.DrawLine(transform.position, transform.position + Vector3.up, Color.red, 0.1f);
+        yield return null;
     }
 
+    /// <summary>
+    /// This coroutine starts when player jumps from ground.
+    /// It handles the cooldown between jumping and being able to double jump.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator AirJumpCooldown()
     {
         jumpCooldown = variables.airJumpCooldown;
@@ -259,10 +277,13 @@ public class SCR_PlayerV3 : MonoBehaviour
         jumpCooldown = 0;
     }
 
+    /// <summary>
+    /// Mid-air jump
+    /// </summary>
+    /// <param name="buffer">Input buffering</param>
+    /// <returns></returns>
     IEnumerator MidairJump(float buffer)
     {
-        yield return null;
-
         // If button was pressed before cooldown ended, buffer the jump
         yield return new WaitForSeconds(buffer);
 
@@ -274,16 +295,21 @@ public class SCR_PlayerV3 : MonoBehaviour
 
             Debug.DrawLine(transform.position, transform.position + Vector3.up / 2, Color.blue, 0.1f);
         }
+        yield return null;
     }
 
     #endregion
 
     #region Ground Detection
 
+    /// <summary>
+    /// This function runs in FixedUpdate.
+    /// Half of the ground detection process happens here; the other half happens in OnCollisionStay.
+    /// </summary>
     void GroundDetect()
     {
         // This bit only runs if player has been in the air for > 1 frame
-        if(offGroundFrames > 0)
+        if (offGroundFrames > 0)
         {
             // Give player frictionless physic material in air
             movementColl.material = noFrictionMat;
@@ -294,34 +320,9 @@ public class SCR_PlayerV3 : MonoBehaviour
             offGroundFrames++;
 
         // Set touchingGround to false before checking for ground collision.
-        // This works because FixedUpdate is before OnCollisionStay in execution order.
+        // If OnCollisionStay finds ground, this gets overwritten as true.
+        // This works because FixedUpdate runs before OnCollisionStay each frame.
         touchingGround = false;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        // Attach player to moving platform
-        if (collision.gameObject.CompareTag("Platform"))
-        {
-            transform.SetParent(collision.transform);
-            
-        }
-
-        // Keep track of number of colliding bodies
-        collisionCount++;
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        // Detach player from moving platform
-        if (collision.gameObject.CompareTag("Platform"))
-        {
-            transform.SetParent(null);
-            transform.localScale = Vector3.one;
-        }
-
-        // Keep track of number of colliding bodies
-        collisionCount--;
     }
 
     private void OnCollisionStay(Collision collision)
@@ -331,10 +332,12 @@ public class SCR_PlayerV3 : MonoBehaviour
         {
             float contactAngle = Vector3.Angle(Vector3.up, contact.normal);
 
-            if (contactAngle < variables.maxGroundAngle 
+            // If contact is an appropriate angle, player is touching ground
+            if (contactAngle < variables.maxGroundAngle
                 && jumpCooldown < variables.airJumpCooldown * 0.5f
                 && !overrideGroundDetect)
             {
+
                 if (offGroundFrames > 1)
                     OnLanding();
 
@@ -346,13 +349,39 @@ public class SCR_PlayerV3 : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Attach player to moving platform
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            transform.SetParent(collision.transform);
+
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        // Detach player from moving platform
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            transform.SetParent(null);
+            transform.localScale = Vector3.one;
+        }
+    }
+
     #endregion
 
-    #region Animation
+    #region Rotation
 
+    /// <summary>
+    /// Set player's rotation during normal movement.
+    /// Rotation works the same on ground and in air, because aiming tongue needs to feel consistent.
+    /// </summary>
     void NormalRotation()
     {
-        //Get Player Input:
+        Quaternion prevFrameRotation = transform.rotation;
+
+        //Get player directional input:
         Vector2 input = controls.Player.Movement.ReadValue<Vector2>();
 
         //If Input then set Target Rotation & Smoothly Rotate in Degrees:
@@ -361,14 +390,25 @@ public class SCR_PlayerV3 : MonoBehaviour
             targetRotation = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + camT.eulerAngles.y;
         }
 
-        // reduce turn speed in air
-        float turnSpeed;
-        if (touchingGround)
-            turnSpeed = variables.playerTurnSpeed;
-        else
-            turnSpeed = variables.playerTurnSpeed * variables.airControlPercent;
+        float turnSpeed = variables.playerTurnSpeed;
+
+        // reduce turn speed in air 
+        // (This has been deprecated as player needs to turn quickly to aim tongue)
+        //if (touchingGround)
+        //    turnSpeed = variables.playerTurnSpeed;
+        //else
+        //    turnSpeed = variables.playerTurnSpeed * 3f;
 
         transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, turnSpeed);
+
+        // Rotate player along ground normal
+        if (touchingGround)
+        {
+            Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, groundNormal) * transform.rotation;
+
+            transform.rotation = Quaternion.Slerp(prevFrameRotation, targetRotation, 0.5f);
+        }
+
     }
 
     #endregion
@@ -393,6 +433,7 @@ public class SCR_PlayerV3 : MonoBehaviour
     {
         Gizmos.color = Color.black;
 
+        // Show ground angle with a line
         if (touchingGround && showGroundNormal)
         {
             Gizmos.DrawLine(transform.position, transform.position + groundNormal);

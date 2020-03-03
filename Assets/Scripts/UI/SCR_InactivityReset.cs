@@ -60,7 +60,7 @@ public class SCR_InactivityReset : MonoBehaviour
         timerText.SetText("I don't feel so good");
         yield return new WaitForSeconds(0.3f);
 
-        print("Game was reset due to " + secondsToReset + " seconds of inaactivity.");
+        print("Game was reset due to " + secondsToReset + " seconds of inactivity.");
         Destroy(SCR_VarManager.Instance.gameObject);
         SceneManager.LoadScene(0);
     }
