@@ -38,6 +38,7 @@ public class SCR_PlayerV3 : MonoBehaviour
     public bool overrideNormalMovement = false;
     public bool overrideJump = false;
     public bool overrideRotation = false;
+    public bool overrideGroundDetect = false;
     public bool touchingGround;
     public bool canMidairJump = true;
     #endregion
@@ -330,7 +331,9 @@ public class SCR_PlayerV3 : MonoBehaviour
         {
             float contactAngle = Vector3.Angle(Vector3.up, contact.normal);
 
-            if (contactAngle < variables.maxGroundAngle && jumpCooldown < variables.airJumpCooldown * 0.5f)
+            if (contactAngle < variables.maxGroundAngle 
+                && jumpCooldown < variables.airJumpCooldown * 0.5f
+                && !overrideGroundDetect)
             {
                 if (offGroundFrames > 1)
                     OnLanding();
