@@ -61,7 +61,7 @@ GameObject:
   - component: {fileID: 2507112062474192418}
   - component: {fileID: 2507112062474192416}
   m_Layer: 0
-  m_Name: PRE_Coin1
+  m_Name: PRE_Seed1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,7 +95,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetType: 1
+  isBeingAttacked: 0
   canSwingFromGround: 1
+  startWithVelocity: 1
   isBeingSwung: 0
   HasReward: 1
   rewardType: 0
@@ -118,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50949f33e08ed6845826aeca6bc74dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinValue: 1
+  seedValue: 1
 --- !u!135 &2507112062474192418
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -238,7 +240,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: b87c7d8b900b74843bbba28b42f66cf3, type: 2}
+      objectReference: {fileID: 2100000, guid: db898e5dcdacc9141b69842d1f51b151, type: 2}
     - target: {fileID: -4216859302048453862, guid: 82f9f29c3d97fe64d90d3af1f016a31b,
         type: 3}
       propertyPath: m_LocalPosition.x

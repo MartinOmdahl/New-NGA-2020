@@ -18,6 +18,9 @@ public class SCR_PlayerAnimation : MonoBehaviour
 
     public Texture eyesForward, eyesLeft, eyesRight;
 
+    [Header("Runtime variables")]
+    public bool tongueOut;
+
     InputControls controls;
     SCR_PlayerV3 movement;
     SCR_Tongue tongue;
@@ -25,16 +28,19 @@ public class SCR_PlayerAnimation : MonoBehaviour
     private void Awake()
     {
         controls = new InputControls();
-        movement = GetComponent<SCR_PlayerV3>();
-        tongue = GetComponent<SCR_Tongue>();
+        movement = GetComponentInParent<SCR_PlayerV3>();
+        tongue = GetComponentInParent<SCR_Tongue>();
     }
 
     void Update()
     {
-        anim.SetBool("Walking",
-            controls.Player.Movement.ReadValue<Vector2>().magnitude > 0.05f
-            && movement.touchingGround);
+        // Set animator bools
+        anim.SetBool("Walking", controls.Player.Movement.ReadValue<Vector2>().magnitude > 0.1f);
+        anim.SetBool("TouchingGround", movement.touchingGround);
+        anim.SetBool("TongueOut", tongueOut);
+        //print("Touching ground: " + movement.touchingGround + ", Walking: " + (controls.Player.Movement.ReadValue<Vector2>().magnitude > 0.05f) + ", Tongue out: " + tongueOut);
 
+        // Set animator values
         anim.SetFloat("WalkSpeed", 1.4f * controls.Player.Movement.ReadValue<Vector2>().magnitude);
 
         EyeAnimation();
@@ -42,6 +48,8 @@ public class SCR_PlayerAnimation : MonoBehaviour
 
     void EyeAnimation()
     {
+        // Eye animation is completely independent from animator. It works by swapping out frog's eye texture so it's looking roughly at current target.
+
         if (tongue.currentTarget != null)
         {
             // Get direction between player and target (ignoring height difference)
@@ -72,4 +80,20 @@ public class SCR_PlayerAnimation : MonoBehaviour
             eyesRenderer.material.mainTexture = eyesForward;
         }
     }
+
+    public void OverrideMovementAnims()
+    {
+        // Function is called by animation event.
+        // Activate the "Override Walk" bool. Walk animation won't play until it's re-activated.
+
+        anim.SetBool("OverrideWalk", true);
+    }
+    public void StopOverrideMovementAnims()
+    {
+        // Function is called by animation event.
+        // Re-activate normal movement animations
+
+        anim.SetBool("OverrideWalk", false);
+    }
+    
 }

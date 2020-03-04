@@ -22,6 +22,7 @@ public class SCR_Tongue : MonoBehaviour
     public Transform tongueCollider;
     InputControls controls;
     SCR_PlayerV3 movement;
+    SCR_PlayerAnimation animScript;
     SCR_VarManager varManager;
     SCR_ObjectReferenceManager objectRefs;
     Rigidbody rb;
@@ -29,12 +30,12 @@ public class SCR_Tongue : MonoBehaviour
 
     #region Public variables
     public SCR_TongueTarget currentTarget;
+    public bool lockedOnTarget;
     #endregion
 
     #region Local variables
     enum TongueState { Retracted, Attacking, Attached, Retracting }
     TongueState tongueState = TongueState.Retracted;
-    bool lockedOnTarget;
     bool holdingTongueButton;
     bool grabbedOnTarget;
     bool grabTerminated;
@@ -45,6 +46,7 @@ public class SCR_Tongue : MonoBehaviour
         controls = new InputControls();
         rb = GetComponent<Rigidbody>();
         movement = GetComponent<SCR_PlayerV3>();
+        animScript = GetComponentInChildren<SCR_PlayerAnimation>();
 
         tongueState = TongueState.Retracted;
 
@@ -164,10 +166,15 @@ public class SCR_Tongue : MonoBehaviour
      * Tongue Attack
      * Tongue Retract
      */
+
+
     IEnumerator TongueAttack(SCR_TongueTarget target)
     {
         // Tell target it's being attacked
         target.isBeingAttacked = true;
+
+        // Tell animation that tongue is being extended
+        animScript.tongueOut = true;
 
         float TongueDistance = 0;
         while (TongueDistance < 1 && target != null)
@@ -222,6 +229,9 @@ public class SCR_Tongue : MonoBehaviour
     IEnumerator TongueRetract(Vector3 targetPos, float startingDistance)
     {
         tongueState = TongueState.Retracting;
+
+        // Tell animation that tongue is retracted
+        animScript.tongueOut = false;
 
         float TongueDistance = startingDistance;
         while (TongueDistance > 0)
@@ -293,7 +303,7 @@ public class SCR_Tongue : MonoBehaviour
             swingTime += Time.deltaTime;
 
             // Add some forward rotation at the beginning of swing
-            if (swingTime < 0.1f)
+            if (target.startWithVelocity && swingTime < 0.1f)
             {
                 targetJointRb.AddRelativeTorque(-400 * Time.deltaTime, 0, 0, ForceMode.Impulse);
             }
@@ -462,14 +472,28 @@ public class SCR_Tongue : MonoBehaviour
             target.isBeingPulled = false;
         }
 
-        // Enable normal movement
-        movement.overrideRotation = false;
-        movement.overrideJump = false;
-
-        grabTerminated = false;
         grabbedOnTarget = false;
 
+        // Start retracting tongue
         StartCoroutine(TongueRetract(tongueCollider.transform.position, 1));
+
+        // If player was forced to release grab:
+        if (grabTerminated)
+        {
+            // Jerk player backwards
+            rb.AddRelativeForce(0, 0, -6, ForceMode.Impulse);
+            movement.overrideNormalMovement = true;
+            
+            // Delay enabling normal movement
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // Enable normal movement
+        movement.overrideJump = false;
+        movement.overrideRotation = false;
+        movement.overrideNormalMovement = false;
+
+        grabTerminated = false;
     }
 
     public void TerminateGrab()
@@ -499,58 +523,6 @@ public class SCR_Tongue : MonoBehaviour
 
         controls.Player.TongueButtonPress.performed += ctx => holdingTongueButton = true;
         controls.Player.TongueButtonRelease.performed += ctx => holdingTongueButton = false;
-    }
-    #endregion
-
-    #region Gizmos
-    float targetSphereSize = 0;
-    Vector3 targetIconPosition;
-    private void OnDrawGizmos()
-    {
-        #region Highlight Target gizmos
-        Gizmos.color = Color.red;
-
-        // Set color of targeting icon to indicate target locking
-        Color targetingColor;
-        if (lockedOnTarget)
-            targetingColor = new Color(1, .6f, .6f);
-        else
-            targetingColor = new Color(1, 0, 0);
-
-        if (currentTarget != null)
-        {
-            // Show target icon and wire sphere on current target
-            targetIconPosition = Vector3.Lerp(targetIconPosition, currentTarget.transform.position, 20 * Time.deltaTime);
-            targetSphereSize = Mathf.MoveTowards(targetSphereSize, 0.5f, 4 * Time.deltaTime);
-            Gizmos.DrawIcon(targetIconPosition + currentTarget.transform.TransformDirection(currentTarget.targetIconOffset), "SPR_TargetTriangle128.png", false, targetingColor);
-        }
-        else
-        {
-            // If there is no target, shrink wire sphere to oblivion
-            targetSphereSize = Mathf.MoveTowards(targetSphereSize, 0.0f, 4 * Time.deltaTime);
-        }
-        Gizmos.DrawWireSphere(targetIconPosition, targetSphereSize);
-        #endregion
-
-        #region Show Target Range gizmos
-        Gizmos.color = Color.blue;
-
-        // you know what, fuck this whole part
-
-        //if (Application.isPlaying)
-        //{
-        //    DrawRelativeDirLine(new Vector3(0, variables.maxTargetAngle, 0), tongueParent);
-        //    DrawRelativeDirLine(new Vector3(0, -variables.maxTargetAngle, 0), tongueParent);
-        //    DrawRelativeDirLine(new Vector3(variables.maxTargetAngle, 0, 0), tongueParent);
-        //    DrawRelativeDirLine(new Vector3(-variables.maxTargetAngle, 0, 0), tongueParent);
-
-        //    void DrawRelativeDirLine(Vector3 angle, Transform lineParent)
-        //    {
-        //        Gizmos.DrawLine(lineParent.position, lineParent.position + ((Quaternion.Euler(angle) * lineParent.forward).normalized * variables.maxTargetDistance));
-        //    }
-        //}
-
-        #endregion
     }
     #endregion
 }

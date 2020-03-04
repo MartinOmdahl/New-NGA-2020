@@ -50,6 +50,7 @@ MonoBehaviour:
   targetType: 1
   isBeingAttacked: 0
   canSwingFromGround: 1
+  startWithVelocity: 1
   isBeingSwung: 0
   HasReward: 1
   rewardType: 0
@@ -319,7 +320,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: b87c7d8b900b74843bbba28b42f66cf3, type: 2}
+      objectReference: {fileID: 2100000, guid: db898e5dcdacc9141b69842d1f51b151, type: 2}
     - target: {fileID: -4216859302048453862, guid: 82f9f29c3d97fe64d90d3af1f016a31b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -378,7 +379,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 82f9f29c3d97fe64d90d3af1f016a31b,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.43253252
+      value: 0.34
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 82f9f29c3d97fe64d90d3af1f016a31b,
         type: 3}

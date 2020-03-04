@@ -22,7 +22,7 @@ MonoBehaviour:
   airJumpCooldown: 0.4
   airControlPercent: 0.6
   terminalVelocity: 10
-  maxGroundAngle: 45
+  maxGroundAngle: 60
   maxTargetDistance: 5
   maxTargetAngle: 90
   holdToTarget: 1
@@ -52,7 +52,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   swingDistance: 1
   maxHealth: 3
-  sensitivity: 180
-  distanceFromTarget: 7
-  pitchMinMax: {x: -40, y: 85}
+  camSensitivity: 180
+  camDistanceMinMax: {x: 1, y: 7}
+  camPitchMinMax: {x: -15, y: 85}
   camTurnSpeed: 0.1

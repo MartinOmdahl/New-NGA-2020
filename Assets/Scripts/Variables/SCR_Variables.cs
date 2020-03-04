@@ -49,9 +49,8 @@ public class SCR_Variables : ScriptableObject
 
 
 	[Header("Camera")]
-	public float sensitivity = 1;
-	public float distanceFromTarget = 3;
-	public Vector2 pitchMinMax = new Vector2(-40, 85);
-
-	public float camTurnSpeed = 0.1f;
+	public float camSensitivity = 1;
+	public Vector2 camDistanceMinMax = new Vector2(1, 7);
+    public Vector2 camPitchMinMax = new Vector2(-15, 85);
+    public float camTurnSpeed = 0.1f;
 }

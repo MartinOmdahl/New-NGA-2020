@@ -21,6 +21,7 @@ public class SCR_TongueTarget : MonoBehaviour
     // Swing variables
     [Tooltip("Whether player can start swing while grounded")]
     public bool canSwingFromGround = true;
+    public bool startWithVelocity = true;
     public bool isBeingSwung;
 
     // Eat variables
@@ -99,6 +100,7 @@ public class DynamicVariables : Editor
         {
             case SCR_TongueTarget.TargetType.Swing:
                 tongueTarget.canSwingFromGround = EditorGUILayout.Toggle("Can Swing From Ground", tongueTarget.canSwingFromGround);
+                tongueTarget.startWithVelocity = EditorGUILayout.Toggle("Start With Velocity", tongueTarget.startWithVelocity);
                 break;
 
             case SCR_TongueTarget.TargetType.Eat:

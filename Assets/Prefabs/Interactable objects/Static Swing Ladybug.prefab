@@ -222,6 +222,7 @@ MonoBehaviour:
   targetType: 0
   isBeingAttacked: 0
   canSwingFromGround: 1
+  startWithVelocity: 1
   isBeingSwung: 0
   HasReward: 0
   rewardType: 0
@@ -715,7 +716,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 005950e09d8a97a429dbfa62cccbe66b, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6376627039494748584, guid: 034068c1bbb557e408187b4bb853f8e5, type: 3}
+    - {fileID: 6376627039127599837, guid: 034068c1bbb557e408187b4bb853f8e5, type: 3}
+    - {fileID: 6376627038199042848, guid: 034068c1bbb557e408187b4bb853f8e5, type: 3}
+    - {fileID: 6376627037891947896, guid: 034068c1bbb557e408187b4bb853f8e5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 034068c1bbb557e408187b4bb853f8e5, type: 3}
 --- !u!4 &1995034209081734022 stripped
 Transform:
