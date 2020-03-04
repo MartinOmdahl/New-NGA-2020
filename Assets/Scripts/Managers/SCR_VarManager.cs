@@ -31,5 +31,6 @@ public class SCR_VarManager : MonoBehaviour
     public List<int> CollectedGoldNuts = new List<int>();
 
     [Header("Gameplay")]
-    public bool GamePaused = false;
+    public bool gamePaused = false;
+    public bool gameOver = false;
 }

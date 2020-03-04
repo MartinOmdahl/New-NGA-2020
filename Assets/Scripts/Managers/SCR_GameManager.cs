@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SCR_GameManager : MonoBehaviour
 {
@@ -44,9 +45,9 @@ public class SCR_GameManager : MonoBehaviour
         print("pause check");
 
         // If not [in a cutscene] or other menu
-        if (varManager.GamePaused)
+        if (varManager.gamePaused && !varManager.gameOver)
         {
-            varManager.GamePaused = false;
+            varManager.gamePaused = false;
 
             // Remove pause HUD
             objectRefs.pauseMenu.alpha = 0;
@@ -61,9 +62,9 @@ public class SCR_GameManager : MonoBehaviour
             objectRefs.player.GetComponent<SCR_PlayerV3>().enabled = true;
             objectRefs.player.GetComponent<SCR_Tongue>().enabled = true;
         }
-        else
+        else if (!varManager.gameOver)
         {
-            varManager.GamePaused = true;
+            varManager.gamePaused = true;
 
             // Bring up pause hud
             objectRefs.pauseMenu.alpha = 1;

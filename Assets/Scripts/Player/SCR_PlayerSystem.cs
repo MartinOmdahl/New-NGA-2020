@@ -17,6 +17,7 @@ public class SCR_PlayerSystem : MonoBehaviour
         objectRefs.player = gameObject;
         varManager.currentHealth = variables.maxHealth;
     }
+
     private void OnDisable()
     {
         objectRefs.player = null;
@@ -24,18 +25,24 @@ public class SCR_PlayerSystem : MonoBehaviour
 
     void Update()
     {
-        if(varManager.currentHealth <= 0)
+        if(varManager.currentHealth <= 0 && !varManager.gameOver)
         {
-            Die();
+            StartCoroutine(Die());
         }
     }
 
-    void Die()
+    IEnumerator Die()
     {
+        varManager.gameOver = true;
         // Disable player behavior
         // Play animation
 
-        // Bring up menu to reset game, and freeze time
+        // Wait until end of animation
+        yield return null;
+
+        //freeze time
+        Time.timeScale = 0;
+        Time.fixedDeltaTime = 0;
 
         print("YOU DIED");
     }
